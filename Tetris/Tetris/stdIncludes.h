@@ -36,6 +36,7 @@ using namespace std;
 #define ScreenWidth 800
 #define ScreenHeight 600
 const double FPS = 90.0;
+const double gravitySpeed = 90;
 
 /* fonts */
 #define ConsolaTTF "res//fonts//consola.ttf"
@@ -44,6 +45,13 @@ const double FPS = 90.0;
 //#define StartMenuWallpaper "res//images//StartMenuWallpaperHD.png"
 #define PlayingBackground "res//images//playing_bg.png"
 #define MouseCursor "res//images//mouse_cursor.png"
+
+/* piece patterns */
+#define YellowPattern "res//images//yellow-cell.png"
+#define PurplePattern "res//images//purple-cell.png"
+#define RedPattern "res//images//red-cell.png"
+#define GreenPattern "res//images//green-cell.png"
+#define BluePattern "res//images//blue-cell.png"
 
 /* sounds */
 #define OverButton "res//sounds//over_button.wav"

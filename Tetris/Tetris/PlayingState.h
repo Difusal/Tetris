@@ -4,6 +4,7 @@
 #include "state.h"
 #include "Tetris.h"
 #include "Button.h"
+#include "Piece.h"
 
 class PlayingState: public State
 {
@@ -14,6 +15,12 @@ public:
 	virtual void Terminate();
 
 private:
+	Piece *nextPiece;
+	Piece *fallingPiece;
+	Piece *holdPiece;
+
+	vector<vector<Cell> > boardMatrix;
+	
 	Button *exitButton;
 	vector<Button*> buttons;
 

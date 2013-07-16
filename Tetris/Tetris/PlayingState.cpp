@@ -13,10 +13,15 @@ void PlayingState::Initialize()
 	/* defining buttons */
 	exitButton = new Button(630, 462, 700, 494);
 	buttons.push_back(exitButton);
+
+	fallingPiece = new Piece();
 }
 
 bool PlayingState::Update( ALLEGRO_EVENT * ev )
 {
+	if (Tetris::GetInstance()->pieceCanFall)
+		fallingPiece->Update();
+
 	/* checking if any button was pressed */
 	if (exitButton->wasPressed()) {
 		Tetris::GetInstance()->setDoneState(true);
@@ -28,7 +33,11 @@ bool PlayingState::Update( ALLEGRO_EVENT * ev )
 
 void PlayingState::Draw()
 {
+	/* drawing background */
 	al_draw_bitmap(background, 0, 0, NULL);
+
+	/* drawing falling piece */
+	fallingPiece->Draw();
 
 	/* checking if any button is being hovered */
 	for (unsigned int i = 0; i < buttons.size(); i++)

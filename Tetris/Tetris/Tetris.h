@@ -5,8 +5,14 @@
 
 int random_number (int min, int max);
 
-enum GameState
-{
+enum PieceTypes { I, J, L, O, S, T, Z };
+enum CellColor { YellowCell, PurpleCell, RedCell, GreenCell, BlueCell };
+struct Cell {
+	bool occupied;
+	CellColor color;
+};
+
+enum GameState {
 	MainMenu,
 	Playing,
 	Paused,
@@ -15,7 +21,6 @@ enum GameState
 	OptionsMenu,
 	Credits
 };
-//static GameState currentState = Playing;
 
 class Tetris
 {
@@ -38,19 +43,21 @@ public:
 	double mouse_x, mouse_y;
 	bool left_mouse_button_pressed;
 	bool left_mouse_button_released;
+	bool pieceCanFall;
 
 private:
 	static Tetris *instance;
 	int state;
 	vector<State*> states;
 
+	ALLEGRO_BITMAP *mouse;
+
+	bool done, draw;
+	int gravityCounter;
+
 	ALLEGRO_DISPLAY *display;
 	ALLEGRO_TIMER *timer;
 	ALLEGRO_EVENT_QUEUE *event_queue;
 	ALLEGRO_EVENT ev;
 	ALLEGRO_KEYBOARD_STATE keyState;
-
-	ALLEGRO_BITMAP *mouse;
-
-	bool done, draw;
 };

@@ -5,9 +5,19 @@
 class Piece
 {
 public:
-	Piece(void);
+	Piece();
+	Piece(int PieceType);
 
+	void Update();
+	void Draw();
 
+	~Piece();
 
-	~Piece(void);
+private:
+	int type;
+	vector<vector<int> > matrix;
+
+	int x_pos, y_pos;
+
+	ALLEGRO_BITMAP *pattern;
 };

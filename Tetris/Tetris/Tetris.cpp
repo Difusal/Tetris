@@ -108,11 +108,13 @@ void Tetris::Initialize()
 	al_register_event_source(event_queue, al_get_keyboard_event_source());	
 
 	cout << "Initializing variables..." << endl;
+	mouse = al_load_bitmap(MouseCursor);
 	left_mouse_button_pressed = false;
 	left_mouse_button_released = false;
 	done = false;
 	draw = true;
-	mouse = al_load_bitmap(MouseCursor);
+	pieceCanFall = true;
+	gravityCounter = 0;
 
 	cout << "Starting timers..." << endl;
 	al_start_timer(timer);
@@ -181,6 +183,18 @@ void Tetris::StartTetris()
 		if (ev.type == ALLEGRO_EVENT_TIMER)
 		{
 			states[state]->Update(& ev);
+
+			if (!pieceCanFall)
+			{
+				gravityCounter++;
+				if (gravityCounter > gravitySpeed)
+				{
+					pieceCanFall = true;
+					gravityCounter = 0;
+				}
+			}
+
+			left_mouse_button_released = false;
 
 			draw = true;
 		}
