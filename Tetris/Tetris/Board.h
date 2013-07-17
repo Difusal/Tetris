@@ -9,6 +9,8 @@ class Board
 public:
 	Board();
 
+	bool PieceCanMoveRight(Piece *piece);
+	bool PieceCanMoveLeft(Piece *piece);
 	void Update();
 	bool UpdatePieceLockedState(Piece *piece);
 	void MergePiece(Piece *piece);

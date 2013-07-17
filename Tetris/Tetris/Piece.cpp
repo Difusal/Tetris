@@ -143,7 +143,7 @@ Piece::Piece()
 	}
 
 	x_pos = 4;
-	y_pos = -(int)matrix.size();
+	y_pos = 0;
 
 	width = matrix[0].size();
 	height = matrix.size();
@@ -291,38 +291,34 @@ Piece::Piece(int PieceType)
 	}
 
 	x_pos = 4;
-	y_pos = -(int)matrix.size();
+	y_pos = 0;
 
 	width = matrix[0].size();
 	height = matrix.size();
 }
 
 
-void Piece::Update()
-{
-	
-}
+void Piece::RotateRight() {
+	/* creating new matrix */
+	vector<int> temp (matrix.size());
+	vector<vector<int> > rotated_matrix;
+	for (unsigned int i = 0; i < matrix[0].size(); i++)
+		rotated_matrix.push_back(temp);
 
-void Piece::Draw()
-{
-	int x_correction = 275;
-
-	if (x_pos > 9)
-		x_correction = 265;
-	else if (x_pos < 0)
-		x_correction = 285;
-
+	/* transferring values */
 	for (unsigned int i = 0; i < matrix.size(); i++)
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
-			if (matrix[i][j] == 1 && 50 <= 50 + y_pos*25 + i*25)
-				al_draw_bitmap(pattern, x_correction + x_pos*25 + j*25, 50 + y_pos*25 + i*25, NULL);
+		for (unsigned int j = 0; j < matrix[0].size(); j++)
+			rotated_matrix[rotated_matrix[0].size()-j][i] = matrix[i][j];
+
+	/* redefining current piece matrix */
+	matrix = rotated_matrix;
 }
 
 
 void Piece::PositionOnBoardTop()
 {
 	x_pos = 4;
-	y_pos = -(int)matrix.size();
+	y_pos = 0;
 }
 
 void Piece::PositionOnHoldBox()
@@ -332,19 +328,19 @@ void Piece::PositionOnHoldBox()
 	default:
 	case I:
 		x_pos = -7;
-		y_pos = 0;
+		y_pos = 2;
 		break;
 	case O:
 	case J:
 	case Z:
 		x_pos = -7;
-		y_pos = 1;
+		y_pos = 3;
 		break;
 	case L:
 	case S:
 	case T:
 		x_pos = -8;
-		y_pos = 1;
+		y_pos = 3;
 		break;
 	}
 }
@@ -356,21 +352,36 @@ void Piece::PositionOnNextPieceBox()
 	default:
 	case I:
 		x_pos = 15;
-		y_pos = 0;
+		y_pos = 2;
 		break;
 	case O:
 	case J:
 	case Z:
 		x_pos = 15;
-		y_pos = 1;
+		y_pos = 3;
 		break;
 	case L:
 	case S:
 	case T:
 		x_pos = 14;
-		y_pos = 1;
+		y_pos = 3;
 		break;
 	}
+}
+
+
+void Piece::Draw() {
+	int x_correction = 275;
+
+	if (x_pos > 9)
+		x_correction = 265;
+	else if (x_pos < 0)
+		x_correction = 285;
+
+	for (unsigned int i = 0; i < matrix.size(); i++)
+		for (unsigned int j = 0; j < matrix[i].size(); j++)
+			if (matrix[i][j] == 1 && 50 <= y_pos*25 + i*25)
+				al_draw_bitmap(pattern, x_correction + x_pos*25 + j*25, y_pos*25 + i*25, NULL);
 }
 
 

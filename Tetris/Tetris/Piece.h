@@ -8,12 +8,13 @@ public:
 	Piece();
 	Piece(int PieceType);
 
-	void Update();
-	void Draw();
+	void RotateRight();
 
 	void PositionOnBoardTop();
 	void PositionOnNextPieceBox();
 	void PositionOnHoldBox();
+
+	void Draw();
 
 	~Piece();
 
