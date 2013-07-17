@@ -137,6 +137,9 @@ Piece::Piece()
 
 	x_pos = 4;
 	y_pos = -(int)matrix.size();
+
+	width = matrix[0].size();
+	height = matrix.size();
 }
 
 Piece::Piece(int PieceType)
@@ -275,13 +278,14 @@ Piece::Piece(int PieceType)
 
 	x_pos = 4;
 	y_pos = -(int)matrix.size();
+
+	width = matrix[0].size();
+	height = matrix.size();
 }
 
 void Piece::Update()
 {
-	Tetris::GetInstance()->pieceCanFall = false;
-
-	y_pos++;
+	
 }
 
 void Piece::Draw()

@@ -13,11 +13,12 @@ public:
 
 	~Piece();
 
+	int x_pos, y_pos;
+	int width, height;
+
 private:
 	int type;
 	vector<vector<int> > matrix;
-
-	int x_pos, y_pos;
-
+	
 	ALLEGRO_BITMAP *pattern;
 };

@@ -163,7 +163,6 @@ void Tetris::StartTetris()
 	while (!done)
 	{
 		al_wait_for_event(event_queue, & ev);
-		al_get_keyboard_state(&keyState);
 
 		TrackMouse();
 

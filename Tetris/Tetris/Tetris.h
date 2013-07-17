@@ -38,6 +38,7 @@ public:
 	void setDoneState(bool newState) { done = newState; }
 
 	ALLEGRO_DISPLAY * GetDisplay() { return display; }
+	ALLEGRO_TIMER * GetTimer() { return timer; }
 	ALLEGRO_FONT *font;
 
 	double mouse_x, mouse_y;
@@ -59,5 +60,4 @@ private:
 	ALLEGRO_TIMER *timer;
 	ALLEGRO_EVENT_QUEUE *event_queue;
 	ALLEGRO_EVENT ev;
-	ALLEGRO_KEYBOARD_STATE keyState;
 };

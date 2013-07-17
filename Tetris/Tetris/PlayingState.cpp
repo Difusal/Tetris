@@ -17,10 +17,49 @@ void PlayingState::Initialize()
 	fallingPiece = new Piece();
 }
 
-bool PlayingState::Update( ALLEGRO_EVENT * ev )
+bool PlayingState::Update(ALLEGRO_EVENT * ev)
 {
-	if (Tetris::GetInstance()->pieceCanFall)
-		fallingPiece->Update();
+	al_get_keyboard_state(&keyState);
+
+	if (ev->timer.source == Tetris::GetInstance()->GetTimer()) {
+		/* moving piece sideways */
+		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT)) {
+			fallingPiece->x_pos++;
+			if (fallingPiece->x_pos + fallingPiece->width > 10)
+				fallingPiece->x_pos = 10 - fallingPiece->width;
+		}
+		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT)) {
+			fallingPiece->x_pos--;
+			if (fallingPiece->x_pos < 0)
+				fallingPiece->x_pos = 0;
+		}
+		/* rotating piece */
+		if (al_key_down(&keyState, ALLEGRO_KEY_D)) {
+
+		}
+		if (al_key_down(&keyState, ALLEGRO_KEY_A)) {
+
+		}
+		/* soft dropping piece */
+		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
+			fallingPiece->y_pos++;
+		}
+		/* hard dropping piece */
+		if (al_key_down(&keyState, ALLEGRO_KEY_UP) ||
+			al_key_down(&keyState, ALLEGRO_KEY_SPACE)) {
+
+		}
+		/* holding piece */
+		if (al_key_down(&keyState, ALLEGRO_KEY_LSHIFT)) {
+
+		}
+	}
+
+	/* dropping piece */
+	if (Tetris::GetInstance()->pieceCanFall) {
+		Tetris::GetInstance()->pieceCanFall = false;
+		fallingPiece->y_pos++;
+	}
 
 	/* checking if any button was pressed */
 	if (exitButton->wasPressed()) {
