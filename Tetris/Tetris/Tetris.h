@@ -8,8 +8,8 @@ int random_number (int min, int max);
 enum PieceTypes { I, J, L, O, S, T, Z };
 enum CellColor { YellowCell, PurpleCell, RedCell, GreenCell, BlueCell };
 struct Cell {
-	bool occupied;
-	CellColor color;
+	bool isOccupied;
+	int color;
 };
 
 enum GameState {

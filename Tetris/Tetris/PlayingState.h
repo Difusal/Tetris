@@ -5,6 +5,7 @@
 #include "Tetris.h"
 #include "Button.h"
 #include "Piece.h"
+#include "Board.h"
 
 class PlayingState: public State
 {
@@ -14,13 +15,18 @@ public:
 	virtual void Draw();
 	virtual void Terminate();
 
+	void UpdatePiecePosition(ALLEGRO_EVENT * ev);
+
 private:
+	bool pieceLocked;
+
+	Board *board;
+
 	Piece *nextPiece;
 	Piece *fallingPiece;
 	Piece *holdPiece;
+	Piece *tempPiece;
 
-	vector<vector<Cell> > boardMatrix;
-	
 	Button *exitButton;
 	vector<Button*> buttons;
 

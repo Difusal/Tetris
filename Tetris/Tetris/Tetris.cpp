@@ -167,27 +167,12 @@ void Tetris::StartTetris()
 		TrackMouse();
 
 		/* --- UPDATING --- */
-		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-		{
-			/*
-			if (ev.keyboard.keycode == ALLEGRO_KEY_SPACE)
-			{
-				if (!paused)
-					paused = true;
-				else
-					paused = false;
-			}*/
-		}
+		states[state]->Update(&ev);
 
-		if (ev.type == ALLEGRO_EVENT_TIMER)
-		{
-			states[state]->Update(& ev);
-
-			if (!pieceCanFall)
-			{
+		if (ev.type == ALLEGRO_EVENT_TIMER) {
+			if (!pieceCanFall) {
 				gravityCounter++;
-				if (gravityCounter > gravitySpeed)
-				{
+				if (gravityCounter > gravitySpeed) {
 					pieceCanFall = true;
 					gravityCounter = 0;
 				}
@@ -210,8 +195,8 @@ void Tetris::StartTetris()
 			// mouse temp coords
 			stringstream ss;
 			ss << mouse_x << " " << mouse_y;
-			//al_draw_text(font, Yellow, 0, 0, NULL, ss.str().c_str());
-			cout << ss.str() << endl;
+			al_draw_text(font, Yellow, 0, 0, NULL, ss.str().c_str());
+			//cout << ss.str() << endl;
 			// -----------------
 			*/
 
