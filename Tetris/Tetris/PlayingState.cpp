@@ -3,7 +3,7 @@
 void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 {
 	if (ev->type == ALLEGRO_EVENT_TIMER) {
-		/* moving piece sideways */
+		/* moving piece right or left */
 		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT)) {
 			if (fallingPiece->x_pos + fallingPiece->width + 1 <= 10)
 				if (board->PieceCanMoveRight(fallingPiece))
@@ -17,7 +17,8 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 
 		/* soft dropping piece */
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
-			fallingPiece->y_pos++;
+			if (!board->UpdatePieceLockedState(fallingPiece))
+				fallingPiece->y_pos++;
 			if (fallingPiece->y_pos < 0)
 				fallingPiece->y_pos = 0;
 		}
@@ -29,7 +30,14 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 			fallingPiece->RotateRight();
 		}
 		if (al_key_down(&keyState, ALLEGRO_KEY_A)) {
-
+			fallingPiece->RotateLeft();
+		}
+		while (board->PieceIsInsideMainMatrixAfterRotating(fallingPiece)) {
+			fallingPiece->x_pos--;
+			if (fallingPiece->x_pos < 0) {
+				fallingPiece->RotateRight();
+				fallingPiece->x_pos = 0;
+			}
 		}
 
 		/* holding piece */
@@ -53,7 +61,7 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 		/* hard dropping piece */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_UP ||
 			ev->keyboard.keycode == ALLEGRO_KEY_SPACE) {
-
+				// stuff here
 		}
 	}
 }
@@ -91,12 +99,16 @@ void PlayingState::Initialize()
 bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	al_get_keyboard_state(&keyState);
 
+	/* checking if any button was pressed */
+	if (exitButton->wasPressed()) {
+		Tetris::GetInstance()->setDoneState(true);
+		return true;
+	}
+
 	/* if line is full, delete it and move down matrix */
 	board->Update();
 
-	/* updating position  */
-	UpdatePiecePosition(ev);
-
+	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
 	/* dropping piece */
 	if (Tetris::GetInstance()->pieceCanFall) {
 		Tetris::GetInstance()->pieceCanFall = false;
@@ -104,10 +116,11 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 			fallingPiece->y_pos++;
 		if (fallingPiece->y_pos < 0)
 			fallingPiece->y_pos = 0;
+
+		return true;
 	}
 
 	/* if piece settled, releasing next */
-	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
 	if (pieceLocked) {
 		board->MergePiece(fallingPiece);
 
@@ -115,20 +128,19 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 		nextPiece = new Piece();
 
 		fallingPiece->PositionOnBoardTop();
+
+		/* positioning next piece */
+		nextPiece->PositionOnNextPieceBox();
+
+		return true;
 	}
 
-	/* positioning next piece */
-	nextPiece->PositionOnNextPieceBox();
+	/* updating position  */
+	UpdatePiecePosition(ev);
 
 	/* positioning hold piece */
 	if (holdPiece)
 		holdPiece->PositionOnHoldBox();
-
-	/* checking if any button was pressed */
-	if (exitButton->wasPressed()) {
-		Tetris::GetInstance()->setDoneState(true);
-		return true;
-	}
 
 	return false;
 }

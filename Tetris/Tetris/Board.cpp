@@ -47,6 +47,22 @@ bool Board::PieceCanMoveLeft(Piece *piece) {
 	return true;
 }
 
+bool Board::PieceIsInsideMainMatrixAfterRotating( Piece *piece ) {
+	for (unsigned int line = 0; line < piece->matrix.size(); line++) {
+		int scan_row = piece->matrix[line].size()-1;
+		while (scan_row >= 0) {
+			if (piece->matrix[line][scan_row] &&
+				matrix[piece->y_pos + line][piece->x_pos + scan_row].isOccupied)
+				return true;
+			else
+				scan_row--;
+		}
+	}
+
+	return false;
+}
+
+
 void Board::Update() {
 	int lines_cleared = 0;
 

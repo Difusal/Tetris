@@ -11,6 +11,7 @@ public:
 
 	bool PieceCanMoveRight(Piece *piece);
 	bool PieceCanMoveLeft(Piece *piece);
+	bool PieceIsInsideMainMatrixAfterRotating(Piece *piece);
 	void Update();
 	bool UpdatePieceLockedState(Piece *piece);
 	void MergePiece(Piece *piece);

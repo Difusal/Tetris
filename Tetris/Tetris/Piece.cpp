@@ -299,6 +299,9 @@ Piece::Piece(int PieceType)
 
 
 void Piece::RotateRight() {
+	/* verifying if piece can be rotated */
+	// stuff here
+
 	/* creating new matrix */
 	vector<int> temp (matrix.size());
 	vector<vector<int> > rotated_matrix;
@@ -308,10 +311,25 @@ void Piece::RotateRight() {
 	/* transferring values */
 	for (unsigned int i = 0; i < matrix.size(); i++)
 		for (unsigned int j = 0; j < matrix[0].size(); j++)
-			rotated_matrix[rotated_matrix[0].size()-j][i] = matrix[i][j];
+			rotated_matrix[j][matrix.size()-1-i] = matrix[i][j];
 
 	/* redefining current piece matrix */
 	matrix = rotated_matrix;
+
+	/* updating width and height values */
+	width = matrix[0].size();
+	height = matrix.size();
+
+	/* updating piece position */
+	if (x_pos + width > 10)
+		x_pos = 10 - width;
+}
+
+void Piece::RotateLeft()
+{
+	/* rotate left == rotate right 3 times */
+	for (unsigned int i = 0; i < 3; i++)
+		RotateRight();
 }
 
 

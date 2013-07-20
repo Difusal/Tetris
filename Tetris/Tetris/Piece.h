@@ -9,6 +9,7 @@ public:
 	Piece(int PieceType);
 
 	void RotateRight();
+	void RotateLeft();
 
 	void PositionOnBoardTop();
 	void PositionOnNextPieceBox();
