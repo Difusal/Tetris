@@ -37,6 +37,7 @@ using namespace std;
 #define ScreenHeight 600
 const double FPS = 15.0;
 const double gravitySpeed = FPS;
+const double lockDelay = FPS;
 
 /* fonts */
 #define ConsolaTTF "res//fonts//consola.ttf"

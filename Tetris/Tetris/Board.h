@@ -9,6 +9,7 @@ class Board
 public:
 	Board();
 
+	bool GameOver();
 	bool PieceCanMoveRight(Piece *piece);
 	bool PieceCanMoveLeft(Piece *piece);
 	bool PieceIsInsideMainMatrixAfterRotating(Piece *piece);

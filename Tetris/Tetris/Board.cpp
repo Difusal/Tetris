@@ -17,6 +17,16 @@ Board::Board() {
 }
 
 
+bool Board::GameOver()
+{
+	for (unsigned int i = 0; i < 2; i++)
+		for (unsigned int j = 0; j < matrix[i].size(); j++)
+			if (matrix[i][j].isOccupied)
+				return true;
+
+	return false;
+}
+
 bool Board::PieceCanMoveRight(Piece *piece) {
 	for (unsigned int line = 0; line < piece->matrix.size(); line++) {
 		int scan_row = piece->matrix[line].size()-1;

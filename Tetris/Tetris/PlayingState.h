@@ -19,6 +19,7 @@ public:
 
 private:
 	bool pieceLocked;
+	int lockDelayCounter;
 
 	Board *board;
 

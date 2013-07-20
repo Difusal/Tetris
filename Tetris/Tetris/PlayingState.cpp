@@ -26,10 +26,10 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 	
 	if (ev->type == ALLEGRO_EVENT_KEY_DOWN) {
 		/* rotating piece */
-		if (al_key_down(&keyState, ALLEGRO_KEY_D)) {
+		if (ev->keyboard.keycode == ALLEGRO_KEY_D) {
 			fallingPiece->RotateRight();
 		}
-		if (al_key_down(&keyState, ALLEGRO_KEY_A)) {
+		if (ev->keyboard.keycode == ALLEGRO_KEY_A) {
 			fallingPiece->RotateLeft();
 		}
 		while (board->PieceIsInsideMainMatrixAfterRotating(fallingPiece)) {
@@ -78,6 +78,7 @@ void PlayingState::Initialize()
 	}
 
 	pieceLocked = false;
+	lockDelayCounter = 0;
 
 	/* starting game matrix */
 	board = new Board();
@@ -99,6 +100,12 @@ void PlayingState::Initialize()
 bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	al_get_keyboard_state(&keyState);
 
+	/* checking if game over */
+	if (board->GameOver()) {
+		exit(-1);
+		return true;
+	}
+
 	/* checking if any button was pressed */
 	if (exitButton->wasPressed()) {
 		Tetris::GetInstance()->setDoneState(true);
@@ -112,8 +119,12 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	/* dropping piece */
 	if (Tetris::GetInstance()->pieceCanFall) {
 		Tetris::GetInstance()->pieceCanFall = false;
-		if (!pieceLocked)
+		if (!pieceLocked) {
+			/* restarting counter */
+			lockDelayCounter = 0;
+
 			fallingPiece->y_pos++;
+		}
 		if (fallingPiece->y_pos < 0)
 			fallingPiece->y_pos = 0;
 
@@ -122,17 +133,25 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 
 	/* if piece settled, releasing next */
 	if (pieceLocked) {
-		board->MergePiece(fallingPiece);
+		lockDelayCounter++;
+		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN) ||
+			lockDelayCounter == lockDelay) {
+			/* restarting counter */
+			lockDelayCounter = 0;
 
-		fallingPiece = nextPiece;
-		nextPiece = new Piece();
+			/* merging piece with main matrix */
+			board->MergePiece(fallingPiece);
 
-		fallingPiece->PositionOnBoardTop();
+			fallingPiece = nextPiece;
+			nextPiece = new Piece();
 
-		/* positioning next piece */
-		nextPiece->PositionOnNextPieceBox();
+			fallingPiece->PositionOnBoardTop();
 
-		return true;
+			/* positioning next piece */
+			nextPiece->PositionOnNextPieceBox();
+
+			return true;
+		}
 	}
 
 	/* updating position  */
