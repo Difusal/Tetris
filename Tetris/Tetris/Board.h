@@ -18,7 +18,7 @@ public:
 	bool PieceCanMoveRight(Piece *piece);
 	bool PieceCanMoveLeft(Piece *piece);
 	bool PieceIsInsideMainMatrixAfterRotating(Piece *piece);
-	void Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp);
+	void Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp, bool &FirstPieceLocked);
 	bool UpdatePieceLockedState(Piece *piece);
 	void MergePiece(Piece *piece);
 	void Draw();

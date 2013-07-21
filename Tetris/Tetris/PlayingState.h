@@ -35,6 +35,8 @@ private:
 	double lockDelay;
 	double pieceSidewaysMovementDelay;
 
+	bool gamePaused;
+	bool firstPieceLocked;
 	bool pieceLocked;
 	bool pieceAlreadyHolded;
 	bool pieceMovementDelayAfterPressingKeyContinuouslyOver;

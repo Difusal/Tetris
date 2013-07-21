@@ -74,9 +74,10 @@ bool Board::PieceIsInsideMainMatrixAfterRotating( Piece *piece ) {
 }
 
 
-void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp) {
+void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp, bool &FirstPieceLocked) {
 	int lines_cleared = 0;
 
+	/* deleting full lines */
 	for (unsigned int i = 0; i < matrix.size(); i++) {
 		for (unsigned int j = 0; j < matrix[i].size(); j++) {
 			if (!matrix[i][j].isOccupied)
@@ -102,9 +103,22 @@ void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp) {
 		}
 	}
 
-	if (lines_cleared != 0)
-		cout << "! " << lines_cleared << " cleared !" << endl;
-
+	/* checking if perfect clean happened */
+	bool empty_board = false;
+	if (FirstPieceLocked) {
+		empty_board = true;
+		for (unsigned int i = 2; i < matrix.size(); i++) {
+			if (!empty_board)
+				break;
+			for (unsigned int j = 0; j < matrix[i].size(); j++) {
+				if (matrix[i][j].isOccupied) {
+					empty_board = false;
+					break;
+				}
+			}
+		}
+	}
+	
 	int points_for_x_lines = 0;
 	switch (lines_cleared)
 	{
@@ -122,12 +136,20 @@ void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp) {
 		points_for_x_lines = 300;
 		break;
 	case 4:
+		/* !! TETRIS !! */
 		points_for_x_lines = 1200;
 		break;
 	}
 
+	if (lines_cleared != 0)
+		cout << "! " << lines_cleared << " cleared !" << endl;
+
 	/* updating score */
 	Score += points_for_x_lines * (Level + 1);
+	if (empty_board) {		// if perfect clean...
+		cout << "! PERFECT CLEAN !" << endl;
+		Score += 2000 * (Level+1);
+	}
 
 	/* updating level */
 	int prevLevel = Level;
@@ -208,12 +230,16 @@ void Board::Draw() {
 			double y1 = clearedLineAnimationCoords[i].y1;
 			double y2 = clearedLineAnimationCoords[i].y1 + 25;
 			double yEffectDispersion = 20 + sqrt(clearedLineAnimationCoords[i].frame * 10);
+
 			double alpha = (int)(clearedLineAnimationCoords[i].frame * 255.0 / animationFrames);
-			cout << alpha << endl;
-			ALLEGRO_COLOR effectColor = al_map_rgba(255*alpha, 255*alpha, 0*alpha, alpha);
+			ALLEGRO_COLOR effectColor1 = al_map_rgba(255*alpha, 0*alpha, 0*alpha, alpha);
+			ALLEGRO_COLOR effectColor2 = al_map_rgba(255*alpha, 255*alpha, 0*alpha, alpha);
+			ALLEGRO_COLOR effectColor3 = al_map_rgba(255*alpha, 255*alpha, 255*alpha, alpha);
 
 			/* drawing frame */
-			al_draw_filled_rectangle(0, y1 - yEffectDispersion, ScreenWidth, y2 + yEffectDispersion, effectColor);
+			al_draw_filled_rectangle(0, y1 - yEffectDispersion, ScreenWidth, y2 + yEffectDispersion, effectColor1);
+			al_draw_filled_rectangle(0, y1 - yEffectDispersion + 20, ScreenWidth, y2 + yEffectDispersion - 20, effectColor2);
+			al_draw_filled_rectangle(0, y1 - yEffectDispersion + 50, ScreenWidth, y2 + yEffectDispersion - 50, effectColor3);
 
 			/* incrementing frame to play next */
 			clearedLineAnimationCoords[i].frame++;

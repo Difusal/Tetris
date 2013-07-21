@@ -179,6 +179,8 @@ void PlayingState::Initialize()
 	StartTimers();
 	UpdateTimers();
 
+	gamePaused = false;
+	firstPieceLocked = false;
 	pieceLocked = false;
 	pieceAlreadyHolded = false;
 	pieceMovementDelayAfterPressingKeyContinuouslyOver = false;
@@ -210,6 +212,26 @@ void PlayingState::Initialize()
 bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	al_get_keyboard_state(&keyState);
 
+	/* pausing/resuming game */
+	if ((Tetris::GetInstance()->left_mouse_button_released && gamePaused) ||
+		(ev->type == ALLEGRO_EVENT_KEY_DOWN && gamePaused) ||
+		(ev->type == ALLEGRO_EVENT_KEY_DOWN &&
+		(ev->keyboard.keycode == ALLEGRO_KEY_ESCAPE || ev->keyboard.keycode == ALLEGRO_KEY_ENTER))) {
+			switch (gamePaused)
+			{
+			case 0:
+				gamePaused = true;
+				break;
+			case 1:
+				gamePaused = false;
+				Tetris::GetInstance()->left_mouse_button_released = false;
+				return true;
+				break;
+			}
+	}
+	if (gamePaused)
+		return true;
+
 	/* checking if game over */
 	if (board->GameOver()) {
 		cout << "! Game Over !" << endl;
@@ -223,7 +245,6 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 		cout << "Level Up!" << endl;
 		leveledUp = false;
 		PlayingFPS += 10;
-		al_set_timer_speed(Tetris::GetInstance()->GetTimer(), 1 / PlayingFPS);
 		UpdateTimers();
 	}
 
@@ -234,7 +255,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	}
 
 	/* if line is full, delete it and move down matrix */
-	board->Update(score, level, leveledUp);
+	board->Update(score, level, leveledUp, firstPieceLocked);
 
 	/* dropping piece */
 	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
@@ -263,6 +284,9 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 			/* merging piece with main matrix */
 			board->MergePiece(fallingPiece);
 
+			if (!firstPieceLocked)
+				firstPieceLocked = true;
+
 			fallingPiece = nextPiece;
 			nextPiece = new Piece();
 
@@ -287,6 +311,23 @@ void PlayingState::Draw() {
 	/* drawing background */
 	al_draw_bitmap(background, 0, 0, NULL);
 
+	/* printing score */
+	stringstream ss;
+	ss << score;
+	al_draw_text(Tetris::GetInstance()->font, Yellow, 665, 300, ALLEGRO_ALIGN_CENTER, ss.str().c_str());
+
+	/* if game paused */
+	if (gamePaused) {
+		unsigned int alpha = 200;
+		al_draw_filled_rectangle(0, 0, ScreenWidth, ScreenHeight, al_map_rgba(32*alpha, 32*alpha, 32*alpha, alpha));
+		int x = ScreenWidth/2.0;
+		int y1 = ScreenHeight/2.0 - Tetris::GetInstance()->font->height*2;
+		int y2 = ScreenHeight/2.0 + Tetris::GetInstance()->font->height;
+		al_draw_text(Tetris::GetInstance()->font, Yellow, x, y1, ALLEGRO_ALIGN_CENTRE, "Game Paused");
+		al_draw_text(Tetris::GetInstance()->font, White, x, y2, ALLEGRO_ALIGN_CENTRE, "Press any key or click the screen to resume");
+		return;
+	}
+
 	/* drawing board matrix */
 	board->Draw();
 
@@ -299,11 +340,6 @@ void PlayingState::Draw() {
 	/* drawing hold piece */
 	if (holdPiece)
 		holdPiece->Draw();
-
-	/* printing score */
-	stringstream ss;
-	ss << score;
-	al_draw_text(Tetris::GetInstance()->font, Yellow, 665, 300, ALLEGRO_ALIGN_CENTER, ss.str().c_str());
 
 	/* checking if any button is being hovered */
 	for (unsigned int i = 0; i < buttons.size(); i++)
