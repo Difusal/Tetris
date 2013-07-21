@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "PlayingState.h"
 
 Board::Board() {
 	/* loading cell bitmaps */
@@ -73,7 +74,7 @@ bool Board::PieceIsInsideMainMatrixAfterRotating( Piece *piece ) {
 }
 
 
-void Board::Update() {
+void Board::Update(unsigned int &Score, unsigned int &Level) {
 	int lines_cleared = 0;
 
 	for (unsigned int i = 0; i < matrix.size(); i++) {
@@ -96,6 +97,30 @@ void Board::Update() {
 
 	if (lines_cleared != 0)
 		cout << "! " << lines_cleared << " cleared !" << endl;
+
+	int points_for_x_lines = 0;
+	switch (lines_cleared)
+	{
+	default:
+	case 0:
+		points_for_x_lines = 0;
+		break;
+	case 1:
+		points_for_x_lines = 40;
+		break;
+	case 2:
+		points_for_x_lines = 100;
+		break;
+	case 3:
+		points_for_x_lines = 300;
+		break;
+	case 4:
+		points_for_x_lines = 1200;
+		break;
+	}
+
+	/* updating score */
+	Score += points_for_x_lines * (Level + 1);
 }
 
 bool Board::UpdatePieceLockedState(Piece *piece) {

@@ -15,11 +15,24 @@ public:
 	virtual void Draw();
 	virtual void Terminate();
 
-	void UpdatePiecePosition(ALLEGRO_EVENT * ev);
+	void PositionPiecesCorrectlyOnEachBox();
+	void PositionFallingPieceOnBoardTop();
+	void ComputePlayerInput(ALLEGRO_EVENT * ev);
+
+	void MovePieceRightIfPossible();
+	void MovePieceLeftIfPossible();
+
+	unsigned int score;
+	unsigned int level;
 
 private:
 	bool pieceLocked;
+	bool pieceAlreadyHolded;
+	bool pieceMovementDelayAfterPressingKeyContinuouslyOver;
+	bool rightArrowPressedContinuously;
+	bool leftArrowPressedContinuously;
 	int lockDelayCounter;
+	int pieceSidewaysMovementDelayCounter;
 
 	Board *board;
 

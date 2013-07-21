@@ -49,7 +49,7 @@ void Tetris::CreateAllegroDisplay()
 
 void Tetris::LoadFonts()
 {
-	font = al_load_font(ConsolaTTF, 14, NULL);
+	font = al_load_font(ConsolaTTF, 25, NULL);
 	if (!font)
 	{
 		al_show_native_message_box(Tetris::GetInstance()->display, "Error", "Could not load font file.", "Have you included the resources in the same directory of the program?", NULL, ALLEGRO_MESSAGEBOX_ERROR);
@@ -109,6 +109,8 @@ void Tetris::Initialize()
 
 	cout << "Initializing variables..." << endl;
 	mouse = al_load_bitmap(MouseCursor);
+	mouse_x = ScreenWidth;
+	mouse_y = ScreenHeight;
 	left_mouse_button_pressed = false;
 	left_mouse_button_released = false;
 	done = false;
@@ -191,14 +193,14 @@ void Tetris::StartTetris()
 			/* -- mouse cursor -- */
 			al_draw_bitmap(mouse, mouse_x, mouse_y, NULL);
 
-			/*
+			
 			// mouse temp coords
 			stringstream ss;
 			ss << mouse_x << " " << mouse_y;
 			al_draw_text(font, Yellow, 0, 0, NULL, ss.str().c_str());
 			//cout << ss.str() << endl;
 			// -----------------
-			*/
+			
 
 			al_flip_display();
 			al_clear_to_color(Black);

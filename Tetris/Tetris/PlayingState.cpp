@@ -1,30 +1,51 @@
 #include "PlayingState.h"
 
-void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
+void PlayingState::PositionPiecesCorrectlyOnEachBox()
 {
-	if (ev->type == ALLEGRO_EVENT_TIMER) {
-		/* moving piece right or left */
-		if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT)) {
-			if (fallingPiece->x_pos + fallingPiece->width + 1 <= 10)
-				if (board->PieceCanMoveRight(fallingPiece))
-					fallingPiece->x_pos++;
+	nextPiece->PositionOnNextPieceBox();
+	if (holdPiece)
+		holdPiece->PositionOnHoldBox();
+}
+
+void PlayingState::PositionFallingPieceOnBoardTop()
+{
+	fallingPiece->PositionOnBoardTop();
+}
+
+void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
+{
+	if (ev->type == ALLEGRO_EVENT_KEY_UP) {
+		if (ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+				/* restarting counter */
+				pieceSidewaysMovementDelayCounter = 0;
+
+				pieceMovementDelayAfterPressingKeyContinuouslyOver = false;
+				rightArrowPressedContinuously = false;
 		}
-		if (al_key_down(&keyState, ALLEGRO_KEY_LEFT)) {
-			if (fallingPiece->x_pos - 1 >= 0)
-				if (board->PieceCanMoveLeft(fallingPiece))
-					fallingPiece->x_pos--;
+		if (ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
+			/* restarting counter */
+			pieceSidewaysMovementDelayCounter = 0;
+
+			pieceMovementDelayAfterPressingKeyContinuouslyOver = false;
+			leftArrowPressedContinuously = false;
+		}
+	}
+
+	if (ev->type == ALLEGRO_EVENT_KEY_DOWN) {
+		/* moving piece sideways once */
+		if (!rightArrowPressedContinuously &&
+			ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+				rightArrowPressedContinuously = true;
+				MovePieceRightIfPossible();
+				//return;
+		}
+		if (!leftArrowPressedContinuously &&
+			ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
+				leftArrowPressedContinuously = true;
+				MovePieceLeftIfPossible();
+				return;
 		}
 
-		/* soft dropping piece */
-		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
-			if (!board->UpdatePieceLockedState(fallingPiece))
-				fallingPiece->y_pos++;
-			if (fallingPiece->y_pos < 0)
-				fallingPiece->y_pos = 0;
-		}
-	}	
-	
-	if (ev->type == ALLEGRO_EVENT_KEY_DOWN) {
 		/* rotating piece */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_D) {
 			fallingPiece->RotateRight();
@@ -41,13 +62,18 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 		}
 
 		/* holding piece */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_LSHIFT) {
+		if (ev->keyboard.keycode == ALLEGRO_KEY_LSHIFT &&
+			!pieceAlreadyHolded)
+		{
+			pieceAlreadyHolded = true;
+
 			if (!holdPiece) {
 				holdPiece = fallingPiece;
 				fallingPiece = nextPiece;
 				nextPiece = new Piece();
 
-				fallingPiece->PositionOnBoardTop();
+				PositionPiecesCorrectlyOnEachBox();
+				PositionFallingPieceOnBoardTop();
 			}
 			else if (holdPiece) {
 				tempPiece = fallingPiece;
@@ -64,6 +90,51 @@ void PlayingState::UpdatePiecePosition(ALLEGRO_EVENT * ev)
 				// stuff here
 		}
 	}
+
+	if (ev->type == ALLEGRO_EVENT_TIMER) {
+		if ((rightArrowPressedContinuously || leftArrowPressedContinuously) &&
+			!pieceMovementDelayAfterPressingKeyContinuouslyOver) {
+			pieceSidewaysMovementDelayCounter++;
+
+			if (pieceSidewaysMovementDelayCounter == pieceSidewaysMovementDelay) {
+				/* enabling sideways movement */
+				pieceMovementDelayAfterPressingKeyContinuouslyOver = true;
+			}
+		}
+
+		/* moving piece right or left */
+		if (pieceMovementDelayAfterPressingKeyContinuouslyOver) {
+			if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) &&
+				rightArrowPressedContinuously) {
+				MovePieceRightIfPossible();
+			}
+			if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) &&
+				leftArrowPressedContinuously) {
+				MovePieceLeftIfPossible();
+			}
+		}
+
+		/* soft dropping piece */
+		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
+			if (!board->UpdatePieceLockedState(fallingPiece))
+				fallingPiece->y_pos++;
+			if (fallingPiece->y_pos < 0)
+				fallingPiece->y_pos = 0;
+		}
+	}
+}
+
+
+void PlayingState::MovePieceRightIfPossible() {
+	if (fallingPiece->x_pos + fallingPiece->width + 1 <= 10)
+		if (board->PieceCanMoveRight(fallingPiece))
+			fallingPiece->x_pos++;
+}
+
+void PlayingState::MovePieceLeftIfPossible() {
+	if (fallingPiece->x_pos - 1 >= 0)
+		if (board->PieceCanMoveLeft(fallingPiece))
+			fallingPiece->x_pos--;
 }
 
 
@@ -77,8 +148,17 @@ void PlayingState::Initialize()
 		exit(-1);
 	}
 
+	/* initializing variables */
+	score = 0;
+	level = 0;
+
 	pieceLocked = false;
+	pieceAlreadyHolded = false;
+	pieceMovementDelayAfterPressingKeyContinuouslyOver = false;
+	rightArrowPressedContinuously = false;
+	leftArrowPressedContinuously = false;
 	lockDelayCounter = 0;
+	pieceSidewaysMovementDelayCounter = 0;
 
 	/* starting game matrix */
 	board = new Board();
@@ -91,6 +171,9 @@ void PlayingState::Initialize()
 	holdPiece = nullptr;
 	/* defining temp piece */
 	tempPiece = nullptr;
+
+	PositionPiecesCorrectlyOnEachBox();
+	PositionFallingPieceOnBoardTop();
 
 	/* defining buttons */
 	exitButton = new Button(630, 462, 700, 494);
@@ -113,7 +196,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	}
 
 	/* if line is full, delete it and move down matrix */
-	board->Update();
+	board->Update(score, level);
 
 	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
 	/* dropping piece */
@@ -139,23 +222,24 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 			/* restarting counter */
 			lockDelayCounter = 0;
 
+			/* enabling piece switch with piece in hold box */
+			pieceAlreadyHolded = false;
+
 			/* merging piece with main matrix */
 			board->MergePiece(fallingPiece);
 
 			fallingPiece = nextPiece;
 			nextPiece = new Piece();
 
-			fallingPiece->PositionOnBoardTop();
-
-			/* positioning next piece */
-			nextPiece->PositionOnNextPieceBox();
+			PositionPiecesCorrectlyOnEachBox();
+			PositionFallingPieceOnBoardTop();
 
 			return true;
 		}
 	}
 
 	/* updating position  */
-	UpdatePiecePosition(ev);
+	ComputePlayerInput(ev);
 
 	/* positioning hold piece */
 	if (holdPiece)
@@ -180,6 +264,11 @@ void PlayingState::Draw() {
 	/* drawing hold piece */
 	if (holdPiece)
 		holdPiece->Draw();
+
+	/* printing score */
+	stringstream ss;
+	ss << score;
+	al_draw_text(Tetris::GetInstance()->font, Yellow, 665, 300, ALLEGRO_ALIGN_CENTER, ss.str().c_str());
 
 	/* checking if any button is being hovered */
 	for (unsigned int i = 0; i < buttons.size(); i++)

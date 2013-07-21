@@ -35,9 +35,10 @@ using namespace std;
 #define ProgramTitle "Tetris"
 #define ScreenWidth 800
 #define ScreenHeight 600
-const double FPS = 15.0;
+const double FPS = 20.0;
 const double gravitySpeed = FPS;
 const double lockDelay = FPS;
+const double pieceSidewaysMovementDelay = 5;
 
 /* fonts */
 #define ConsolaTTF "res//fonts//consola.ttf"
