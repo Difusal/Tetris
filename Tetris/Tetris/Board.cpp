@@ -82,10 +82,17 @@ void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp) {
 			if (!matrix[i][j].isOccupied)
 				break;
 			else if (matrix[i][j].isOccupied && j == matrix[i].size()-1) {
+				/* incrementing number of lines cleared */
 				lines_cleared++;
 
+				/* erasing full line */
 				matrix.erase(matrix.begin()+i);
 
+				/* saving details to play line cleared animation */
+				AnimElement tempAnimElem = { i*25, 0 };
+				clearedLineAnimationCoords.push_back(tempAnimElem);
+
+				/* making up to the erased lines */
 				vector<Cell> temp;
 				Cell tempCell = { 0, YellowCell };
 				for (unsigned int i = 0; i < 10; i++)
@@ -159,8 +166,9 @@ void Board::MergePiece(Piece *piece) {
 }
 
 void Board::Draw() {
-	for (unsigned int i = 2; i < matrix.size(); i++)
-		for (unsigned int j = 0; j < matrix[i].size(); j++)
+	/* drawing main matrix */
+	for (unsigned int i = 2; i < matrix.size(); i++) {
+		for (unsigned int j = 0; j < matrix[i].size(); j++) {
 			if (matrix[i][j].isOccupied)
 				switch (matrix[i][j].color) {
 				default:
@@ -180,6 +188,37 @@ void Board::Draw() {
 					al_draw_bitmap(red_cell, 275 + j*25, i*25, NULL);
 					break;
 			}
+		}
+	}
+
+	/* drawing animations */
+	int animationFrames = 20;
+	for (unsigned int i = 0; i < clearedLineAnimationCoords.size(); i++) {
+		/* if animation ended... */
+		if (clearedLineAnimationCoords[i].frame == animationFrames) {
+			/* ...delete AnimElem and...*/
+			clearedLineAnimationCoords.erase(clearedLineAnimationCoords.begin()+i);
+
+			/* ...decrement i to make up to the increment after break */
+			i--;
+			break;
+		}
+		else {
+			/* processing vector info */
+			double y1 = clearedLineAnimationCoords[i].y1;
+			double y2 = clearedLineAnimationCoords[i].y1 + 25;
+			double yEffectDispersion = 20 + sqrt(clearedLineAnimationCoords[i].frame * 10);
+			double alpha = (int)(clearedLineAnimationCoords[i].frame * 255.0 / animationFrames);
+			cout << alpha << endl;
+			ALLEGRO_COLOR effectColor = al_map_rgba(255*alpha, 255*alpha, 0*alpha, alpha);
+
+			/* drawing frame */
+			al_draw_filled_rectangle(0, y1 - yEffectDispersion, ScreenWidth, y2 + yEffectDispersion, effectColor);
+
+			/* incrementing frame to play next */
+			clearedLineAnimationCoords[i].frame++;
+		}
+	}
 }
 
 

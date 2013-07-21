@@ -37,11 +37,12 @@ public:
 
 	void setDoneState(bool newState) { done = newState; }
 
-	ALLEGRO_DISPLAY * GetDisplay() { return display; }
-	ALLEGRO_TIMER * GetTimer() { return timer; }
-	ALLEGRO_TIMER * GetGravityTimer() { return gravityTimer; }
-	ALLEGRO_TIMER * GetSoftDropTimer() { return softDropTimer; }
-	ALLEGRO_TIMER * GetSidewaysMovementTimer() { return sidewaysMovementTimer; }
+	ALLEGRO_DISPLAY *GetDisplay() { return display; }
+	ALLEGRO_TIMER *GetTimer() { return timer; }
+	ALLEGRO_TIMER *GetGravityTimer() { return gravityTimer; }
+	ALLEGRO_TIMER *GetSoftDropTimer() { return softDropTimer; }
+	ALLEGRO_TIMER *GetSidewaysMovementTimer() { return sidewaysMovementTimer; }
+
 	ALLEGRO_FONT *font;
 
 	double mouse_x, mouse_y;

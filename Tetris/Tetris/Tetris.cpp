@@ -224,10 +224,14 @@ void Tetris::Terminate()
 
 	al_destroy_font(font);
 
-	al_destroy_bitmap(mouse);
 	al_destroy_event_queue(event_queue);
+	al_destroy_timer(sidewaysMovementTimer);
+	al_destroy_timer(softDropTimer);
+	al_destroy_timer(gravityTimer);
 	al_destroy_timer(timer);
 	al_destroy_display(display);
+
+	al_destroy_bitmap(mouse);
 
 	delete instance;
 }

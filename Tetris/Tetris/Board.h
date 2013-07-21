@@ -4,6 +4,11 @@
 #include "Tetris.h"
 #include "Piece.h"
 
+struct AnimElement {
+	int y1;
+	int frame;
+};
+
 class Board
 {
 public:
@@ -22,6 +27,7 @@ public:
 
 private:
 	vector<vector<Cell> > matrix;
+	vector<AnimElement> clearedLineAnimationCoords;
 
 	ALLEGRO_BITMAP *yellow_cell;
 	ALLEGRO_BITMAP *blue_cell;
