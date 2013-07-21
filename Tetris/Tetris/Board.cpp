@@ -74,7 +74,7 @@ bool Board::PieceIsInsideMainMatrixAfterRotating( Piece *piece ) {
 }
 
 
-void Board::Update(unsigned int &Score, unsigned int &Level) {
+void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp) {
 	int lines_cleared = 0;
 
 	for (unsigned int i = 0; i < matrix.size(); i++) {
@@ -121,6 +121,12 @@ void Board::Update(unsigned int &Score, unsigned int &Level) {
 
 	/* updating score */
 	Score += points_for_x_lines * (Level + 1);
+
+	/* updating level */
+	int prevLevel = Level;
+	Level = Score/500;
+	if (prevLevel != Level)
+		LeveledUp = true;
 }
 
 bool Board::UpdatePieceLockedState(Piece *piece) {

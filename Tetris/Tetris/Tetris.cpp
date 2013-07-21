@@ -97,6 +97,10 @@ void Tetris::Initialize()
 
 	cout << "Creating timers..." << endl;
 	timer = al_create_timer(1.0 / FPS);
+	/* edit these timers on PlayingState::UpdateSpeeds(); */
+	gravityTimer = al_create_timer(1.0 / FPS);
+	softDropTimer = al_create_timer(1.0 / FPS);
+	sidewaysMovementTimer = al_create_timer(1.0 / FPS);
 
 	cout << "Creating event queues..." << endl;
 	event_queue = al_create_event_queue();
@@ -104,6 +108,9 @@ void Tetris::Initialize()
 	cout << "Registering event sources..." << endl;
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_timer_event_source(gravityTimer));
+	al_register_event_source(event_queue, al_get_timer_event_source(softDropTimer));
+	al_register_event_source(event_queue, al_get_timer_event_source(sidewaysMovementTimer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_keyboard_event_source());	
 
@@ -115,11 +122,12 @@ void Tetris::Initialize()
 	left_mouse_button_released = false;
 	done = false;
 	draw = true;
-	pieceCanFall = true;
-	gravityCounter = 0;
 
 	cout << "Starting timers..." << endl;
 	al_start_timer(timer);
+	al_start_timer(gravityTimer);
+	al_start_timer(softDropTimer);
+	al_start_timer(sidewaysMovementTimer);
 }
 
 void Tetris::TrackMouse()
@@ -172,14 +180,6 @@ void Tetris::StartTetris()
 		states[state]->Update(&ev);
 
 		if (ev.type == ALLEGRO_EVENT_TIMER) {
-			if (!pieceCanFall) {
-				gravityCounter++;
-				if (gravityCounter > gravitySpeed) {
-					pieceCanFall = true;
-					gravityCounter = 0;
-				}
-			}
-
 			left_mouse_button_released = false;
 
 			draw = true;

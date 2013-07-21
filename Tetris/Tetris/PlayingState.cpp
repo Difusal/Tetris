@@ -1,5 +1,17 @@
 #include "PlayingState.h"
 
+void PlayingState::UpdateSpeeds() {
+	/* this timer is the one that speeds up */
+	al_set_timer_speed(Tetris::GetInstance()->GetGravityTimer(), 30.0 / PlayingFPS);
+
+	/* these timers should use FPS denominator to stay constant during the game */
+	al_set_timer_speed(Tetris::GetInstance()->GetSoftDropTimer(), 2.5 / FPS);
+	al_set_timer_speed(Tetris::GetInstance()->GetSidewaysMovementTimer(), 1.5 / FPS);
+	// EDIT THIS TO USE A LOCK TIMER!
+	lockDelay = FPS;
+}
+
+
 void PlayingState::PositionPiecesCorrectlyOnEachBox()
 {
 	nextPiece->PositionOnNextPieceBox();
@@ -32,7 +44,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 	}
 
 	if (ev->type == ALLEGRO_EVENT_KEY_DOWN) {
-		/* moving piece sideways once */
+		/* moving piece sideways ONCE */
 		if (!rightArrowPressedContinuously &&
 			ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
 				rightArrowPressedContinuously = true;
@@ -89,7 +101,8 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 		}
 	}
 
-	if (ev->type == ALLEGRO_EVENT_TIMER) {
+	if (ev->type == ALLEGRO_EVENT_TIMER &&
+		ev->timer.source == Tetris::GetInstance()->GetSidewaysMovementTimer()) {
 		if ((rightArrowPressedContinuously || leftArrowPressedContinuously) &&
 			!pieceMovementDelayAfterPressingKeyContinuouslyOver) {
 			pieceSidewaysMovementDelayCounter++;
@@ -100,7 +113,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 			}
 		}
 
-		/* moving piece right or left */
+		/* moving piece right or left CONTINUOUSLY */
 		if (pieceMovementDelayAfterPressingKeyContinuouslyOver) {
 			if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) &&
 				rightArrowPressedContinuously) {
@@ -111,22 +124,16 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 				MovePieceLeftIfPossible();
 			}
 		}
+	}
 
+	if (ev->type == ALLEGRO_EVENT_TIMER &&
+		ev->timer.source == Tetris::GetInstance()->GetSoftDropTimer()) {
 		/* soft dropping piece */
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
-			if (softDropSpeedCounter == softDropSpeed) {
-				/* restarting counter */
-				softDropSpeedCounter = 0;
-
-				if (!board->UpdatePieceLockedState(fallingPiece))
-					fallingPiece->y_pos++;
-				if (fallingPiece->y_pos < 0)
-					fallingPiece->y_pos = 0;
-			}
-			else if (softDropSpeedCounter != softDropSpeed) {
-				softDropSpeedCounter++;
-			}
-			
+			if (!board->UpdatePieceLockedState(fallingPiece))
+				fallingPiece->y_pos++;
+			if (fallingPiece->y_pos < 0)
+				fallingPiece->y_pos = 0;
 		}
 	}
 }
@@ -158,6 +165,11 @@ void PlayingState::Initialize()
 	/* initializing variables */
 	score = 0;
 	level = 0;
+	leveledUp = false;
+	PlayingFPS = FPS;
+	pieceSidewaysMovementDelay = 5;
+
+	UpdateSpeeds();
 
 	pieceLocked = false;
 	pieceAlreadyHolded = false;
@@ -166,7 +178,6 @@ void PlayingState::Initialize()
 	leftArrowPressedContinuously = false;
 	lockDelayCounter = 0;
 	pieceSidewaysMovementDelayCounter = 0;
-	softDropSpeedCounter = 0;
 
 	/* starting game matrix */
 	board = new Board();
@@ -197,6 +208,15 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 		return true;
 	}
 
+	/* updating speed if level up */
+	if (leveledUp) {
+		cout << "Level Up!" << endl;
+		leveledUp = false;
+		PlayingFPS += 2;
+		al_set_timer_speed(Tetris::GetInstance()->GetTimer(), 1 / PlayingFPS);
+		UpdateSpeeds();
+	}
+
 	/* checking if any button was pressed */
 	if (exitButton->wasPressed()) {
 		Tetris::GetInstance()->setDoneState(true);
@@ -204,22 +224,18 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	}
 
 	/* if line is full, delete it and move down matrix */
-	board->Update(score, level);
+	board->Update(score, level, leveledUp);
 
-	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
 	/* dropping piece */
-	if (Tetris::GetInstance()->pieceCanFall) {
-		Tetris::GetInstance()->pieceCanFall = false;
-		if (!pieceLocked) {
-			/* restarting counter */
-			lockDelayCounter = 0;
+	pieceLocked = board->UpdatePieceLockedState(fallingPiece);
+	if (ev->type == ALLEGRO_EVENT_TIMER &&
+		ev->timer.source == Tetris::GetInstance()->GetGravityTimer()) {
+			if (!pieceLocked)
+				fallingPiece->y_pos++;
+			if (fallingPiece->y_pos < 0)
+				fallingPiece->y_pos = 0;
 
-			fallingPiece->y_pos++;
-		}
-		if (fallingPiece->y_pos < 0)
-			fallingPiece->y_pos = 0;
-
-		return true;
+			return true;
 	}
 
 	/* if piece settled, releasing next */

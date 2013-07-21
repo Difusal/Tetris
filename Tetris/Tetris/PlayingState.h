@@ -15,6 +15,8 @@ public:
 	virtual void Draw();
 	virtual void Terminate();
 
+	void UpdateSpeeds();
+
 	void PositionPiecesCorrectlyOnEachBox();
 	void PositionFallingPieceOnBoardTop();
 	void ComputePlayerInput(ALLEGRO_EVENT * ev);
@@ -24,14 +26,19 @@ public:
 
 	unsigned int score;
 	unsigned int level;
+	bool leveledUp;
 
 private:
+	double PlayingFPS;
+	double gravitySpeed;
+	double lockDelay;
+	double pieceSidewaysMovementDelay;
+
 	bool pieceLocked;
 	bool pieceAlreadyHolded;
 	bool pieceMovementDelayAfterPressingKeyContinuouslyOver;
 	bool rightArrowPressedContinuously;
 	bool leftArrowPressedContinuously;
-	int softDropSpeedCounter;
 	int lockDelayCounter;
 	int pieceSidewaysMovementDelayCounter;
 
