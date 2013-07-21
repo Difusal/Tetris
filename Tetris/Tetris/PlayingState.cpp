@@ -37,13 +37,11 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 			ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
 				rightArrowPressedContinuously = true;
 				MovePieceRightIfPossible();
-				//return;
 		}
 		if (!leftArrowPressedContinuously &&
 			ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
 				leftArrowPressedContinuously = true;
 				MovePieceLeftIfPossible();
-				return;
 		}
 
 		/* rotating piece */
@@ -116,10 +114,19 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 
 		/* soft dropping piece */
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
-			if (!board->UpdatePieceLockedState(fallingPiece))
-				fallingPiece->y_pos++;
-			if (fallingPiece->y_pos < 0)
-				fallingPiece->y_pos = 0;
+			if (softDropSpeedCounter == softDropSpeed) {
+				/* restarting counter */
+				softDropSpeedCounter = 0;
+
+				if (!board->UpdatePieceLockedState(fallingPiece))
+					fallingPiece->y_pos++;
+				if (fallingPiece->y_pos < 0)
+					fallingPiece->y_pos = 0;
+			}
+			else if (softDropSpeedCounter != softDropSpeed) {
+				softDropSpeedCounter++;
+			}
+			
 		}
 	}
 }
@@ -159,6 +166,7 @@ void PlayingState::Initialize()
 	leftArrowPressedContinuously = false;
 	lockDelayCounter = 0;
 	pieceSidewaysMovementDelayCounter = 0;
+	softDropSpeedCounter = 0;
 
 	/* starting game matrix */
 	board = new Board();

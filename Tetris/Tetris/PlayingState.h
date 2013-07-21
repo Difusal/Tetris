@@ -31,6 +31,7 @@ private:
 	bool pieceMovementDelayAfterPressingKeyContinuouslyOver;
 	bool rightArrowPressedContinuously;
 	bool leftArrowPressedContinuously;
+	int softDropSpeedCounter;
 	int lockDelayCounter;
 	int pieceSidewaysMovementDelayCounter;
 
