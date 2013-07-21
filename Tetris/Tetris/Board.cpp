@@ -184,5 +184,9 @@ void Board::Draw() {
 
 
 Board::~Board() {
-
+	al_destroy_bitmap(yellow_cell);
+	al_destroy_bitmap(blue_cell);
+	al_destroy_bitmap(green_cell);
+	al_destroy_bitmap(red_cell);
+	al_destroy_bitmap(purple_cell);
 }

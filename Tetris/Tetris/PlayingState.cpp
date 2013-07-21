@@ -1,32 +1,31 @@
 #include "PlayingState.h"
 
-void PlayingState::UpdateSpeeds() {
-	/* this timer is the one that speeds up */
-	al_set_timer_speed(Tetris::GetInstance()->GetGravityTimer(), 30.0 / PlayingFPS);
-
+void PlayingState::StartTimers() {
 	/* these timers should use FPS denominator to stay constant during the game */
 	al_set_timer_speed(Tetris::GetInstance()->GetSoftDropTimer(), 2.5 / FPS);
 	al_set_timer_speed(Tetris::GetInstance()->GetSidewaysMovementTimer(), 1.5 / FPS);
-	// EDIT THIS TO USE A LOCK TIMER!
 	lockDelay = FPS;
 }
 
+void PlayingState::UpdateTimers() {
+	/* this timer is the one that speeds up */
+	al_set_timer_speed(Tetris::GetInstance()->GetGravityTimer(), 30.0 / PlayingFPS);
+}
 
-void PlayingState::PositionPiecesCorrectlyOnEachBox()
-{
+
+void PlayingState::PositionPiecesCorrectlyOnEachBox() {
 	nextPiece->PositionOnNextPieceBox();
 	if (holdPiece)
 		holdPiece->PositionOnHoldBox();
 }
 
-void PlayingState::PositionFallingPieceOnBoardTop()
-{
+void PlayingState::PositionFallingPieceOnBoardTop() {
 	fallingPiece->PositionOnBoardTop();
 }
 
-void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
-{
-	if (ev->type == ALLEGRO_EVENT_KEY_UP) {
+void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
+	if (ev->type == ALLEGRO_EVENT_KEY_UP) {		
+		/* right arrow key released */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
 				/* restarting counter */
 				pieceSidewaysMovementDelayCounter = 0;
@@ -34,6 +33,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 				pieceMovementDelayAfterPressingKeyContinuouslyOver = false;
 				rightArrowPressedContinuously = false;
 		}
+		/* left arrow key released */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
 			/* restarting counter */
 			pieceSidewaysMovementDelayCounter = 0;
@@ -97,44 +97,51 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev)
 		/* hard dropping piece */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_UP ||
 			ev->keyboard.keycode == ALLEGRO_KEY_SPACE) {
-				// stuff here
+				while (!board->UpdatePieceLockedState(fallingPiece))
+					fallingPiece->y_pos++;
+				if (fallingPiece->y_pos < 0)
+					fallingPiece->y_pos = 0;
 		}
 	}
 
 	if (ev->type == ALLEGRO_EVENT_TIMER &&
 		ev->timer.source == Tetris::GetInstance()->GetSidewaysMovementTimer()) {
-		if ((rightArrowPressedContinuously || leftArrowPressedContinuously) &&
-			!pieceMovementDelayAfterPressingKeyContinuouslyOver) {
-			pieceSidewaysMovementDelayCounter++;
+			/* if right or left arrow key still pressed and piece movement delay isn't over... (...long if :P) */
+			if ((rightArrowPressedContinuously || leftArrowPressedContinuously) &&
+				!pieceMovementDelayAfterPressingKeyContinuouslyOver) {
+					/* ...increment counter */
+					pieceSidewaysMovementDelayCounter++;
 
-			if (pieceSidewaysMovementDelayCounter == pieceSidewaysMovementDelay) {
-				/* enabling sideways movement */
-				pieceMovementDelayAfterPressingKeyContinuouslyOver = true;
+					/* if counter is over... */
+					if (pieceSidewaysMovementDelayCounter == pieceSidewaysMovementDelay) {
+						/* ...enabling sideways movement */
+						pieceMovementDelayAfterPressingKeyContinuouslyOver = true;
+					}
 			}
-		}
 
-		/* moving piece right or left CONTINUOUSLY */
-		if (pieceMovementDelayAfterPressingKeyContinuouslyOver) {
-			if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) &&
-				rightArrowPressedContinuously) {
-				MovePieceRightIfPossible();
+			/* moving falling piece right or left CONTINUOUSLY */
+			if (pieceMovementDelayAfterPressingKeyContinuouslyOver) {
+				if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) &&
+					rightArrowPressedContinuously) {
+						MovePieceRightIfPossible();
+				}
+				if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) &&
+					leftArrowPressedContinuously) {
+						MovePieceLeftIfPossible();
+				}
 			}
-			if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) &&
-				leftArrowPressedContinuously) {
-				MovePieceLeftIfPossible();
-			}
-		}
 	}
 
 	if (ev->type == ALLEGRO_EVENT_TIMER &&
 		ev->timer.source == Tetris::GetInstance()->GetSoftDropTimer()) {
-		/* soft dropping piece */
-		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
-			if (!board->UpdatePieceLockedState(fallingPiece))
-				fallingPiece->y_pos++;
-			if (fallingPiece->y_pos < 0)
-				fallingPiece->y_pos = 0;
-		}
+			/* if down arrow key is pressed... */
+			if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
+				/* ...soft dropping piece */
+				if (!board->UpdatePieceLockedState(fallingPiece))
+					fallingPiece->y_pos++;
+				if (fallingPiece->y_pos < 0)
+					fallingPiece->y_pos = 0;
+			}
 	}
 }
 
@@ -169,7 +176,8 @@ void PlayingState::Initialize()
 	PlayingFPS = FPS;
 	pieceSidewaysMovementDelay = 5;
 
-	UpdateSpeeds();
+	StartTimers();
+	UpdateTimers();
 
 	pieceLocked = false;
 	pieceAlreadyHolded = false;
@@ -204,6 +212,8 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 
 	/* checking if game over */
 	if (board->GameOver()) {
+		cout << "! Game Over !" << endl;
+		cout << "Score: " << score << endl;
 		exit(-1);
 		return true;
 	}
@@ -212,9 +222,9 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	if (leveledUp) {
 		cout << "Level Up!" << endl;
 		leveledUp = false;
-		PlayingFPS += 2;
+		PlayingFPS += 10;
 		al_set_timer_speed(Tetris::GetInstance()->GetTimer(), 1 / PlayingFPS);
-		UpdateSpeeds();
+		UpdateTimers();
 	}
 
 	/* checking if any button was pressed */
@@ -242,6 +252,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	if (pieceLocked) {
 		lockDelayCounter++;
 		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN) ||
+			al_key_down(&keyState, ALLEGRO_KEY_UP) ||
 			lockDelayCounter == lockDelay) {
 			/* restarting counter */
 			lockDelayCounter = 0;
@@ -300,10 +311,16 @@ void PlayingState::Draw() {
 			buttons[i]->drawButton();
 }
 
-void PlayingState::Terminate()
-{
+void PlayingState::Terminate() {
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		delete buttons[i];
+
+	delete nextPiece;
+	delete fallingPiece;
+	delete holdPiece;
+	delete tempPiece;
+
+	delete board;
 
 	al_destroy_bitmap(background);
 }

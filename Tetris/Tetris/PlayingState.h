@@ -15,7 +15,8 @@ public:
 	virtual void Draw();
 	virtual void Terminate();
 
-	void UpdateSpeeds();
+	void StartTimers();
+	void UpdateTimers();
 
 	void PositionPiecesCorrectlyOnEachBox();
 	void PositionFallingPieceOnBoardTop();

@@ -403,7 +403,6 @@ void Piece::Draw() {
 }
 
 
-Piece::~Piece()
-{
+Piece::~Piece() {
 	al_destroy_bitmap(pattern);
 }
