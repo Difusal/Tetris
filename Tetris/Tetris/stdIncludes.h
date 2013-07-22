@@ -52,6 +52,9 @@ const double FPS = 30.0;
 #define GreenPattern "res//images//green-cell.png"
 #define BluePattern "res//images//blue-cell.png"
 
+/* musics */
+#define ThemeSong "res//musics//tetris_theme.ogg"
+
 /* sounds */
 #define OverButton "res//sounds//over_button.wav"
 #define PressedButton "res//sounds//pressed_button.wav"

@@ -44,6 +44,7 @@ private:
 	bool leftArrowPressedContinuously;
 	int lockDelayCounter;
 	int pieceSidewaysMovementDelayCounter;
+	unsigned int themeSongInstancePosition;
 
 	Board *board;
 
@@ -54,6 +55,9 @@ private:
 
 	Button *exitButton;
 	vector<Button*> buttons;
+
+	ALLEGRO_SAMPLE *themeSong;
+	ALLEGRO_SAMPLE_INSTANCE *themeSongInstance;
 
 	ALLEGRO_KEYBOARD_STATE keyState;
 	ALLEGRO_BITMAP *background;

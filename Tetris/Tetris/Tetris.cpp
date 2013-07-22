@@ -62,7 +62,7 @@ void Tetris::Initialize()
 	cout << endl;
 	cout << "##############################" << endl;
 	cout << "##                          ##" << endl;
-	cout << "##     STARTING TETRIS     ##" << endl;
+	cout << "##     STARTING  TETRIS     ##" << endl;
 	cout << "##                          ##" << endl;
 	cout << "##############################" << endl;
 	cout << endl;
@@ -80,13 +80,16 @@ void Tetris::Initialize()
 	cout << "Initializing add ons..." << endl;
 	al_init_image_addon();
 	al_init_primitives_addon();
-	al_init_acodec_addon();
 	al_init_font_addon();
 	al_init_ttf_addon();
+	al_init_acodec_addon();
 	cout << "Installing devices..." << endl;
 	al_install_mouse();
 	al_install_keyboard();
 	al_install_audio();
+
+	cout << "Stating how many sounds can play simultaneously..." << endl;
+	al_reserve_samples(2);
 
 	cout << "Creating display..." << endl;
 	CreateAllegroDisplay();
@@ -120,6 +123,9 @@ void Tetris::Initialize()
 	mouse_y = ScreenHeight;
 	left_mouse_button_pressed = false;
 	left_mouse_button_released = false;
+	musics_on = true;
+	sounds_on = true;
+
 	done = false;
 	draw = true;
 

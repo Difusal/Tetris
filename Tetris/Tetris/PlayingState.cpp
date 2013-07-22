@@ -163,8 +163,7 @@ void PlayingState::Initialize()
 {
 	/* loading background */
 	background = al_load_bitmap(PlayingBackground);
-	if (!background)
-	{
+	if (!background) {
 		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		exit(-1);
 	}
@@ -207,6 +206,21 @@ void PlayingState::Initialize()
 	/* defining buttons */
 	exitButton = new Button(630, 462, 700, 494);
 	buttons.push_back(exitButton);
+
+	if (Tetris::GetInstance()->musics_on) {
+		/* loading audio samples */
+		themeSong = al_load_sample(ThemeSong);
+		if (!themeSong) {
+			al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load Tetris theme song.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+			exit(-1);
+		}
+		/* setting play mode */
+		themeSongInstance = al_create_sample_instance(themeSong);
+		al_set_sample_instance_playmode(themeSongInstance, ALLEGRO_PLAYMODE_LOOP);
+		al_attach_sample_instance_to_mixer(themeSongInstance, al_get_default_mixer());
+		/* start playing song */
+		al_play_sample_instance(themeSongInstance);
+	}	
 }
 
 bool PlayingState::Update(ALLEGRO_EVENT *ev) {
@@ -221,9 +235,17 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 			{
 			case 0:
 				gamePaused = true;
+				if (Tetris::GetInstance()->musics_on) {
+					themeSongInstancePosition = al_get_sample_instance_position(themeSongInstance);
+					al_stop_sample_instance(themeSongInstance);
+				}
 				break;
 			case 1:
 				gamePaused = false;
+				if (Tetris::GetInstance()->musics_on) {
+					al_set_sample_instance_position(themeSongInstance, themeSongInstancePosition);
+					al_play_sample_instance(themeSongInstance);
+				}
 				Tetris::GetInstance()->left_mouse_button_released = false;
 				return true;
 				break;
@@ -348,6 +370,13 @@ void PlayingState::Draw() {
 }
 
 void PlayingState::Terminate() {
+	al_destroy_bitmap(background);
+
+	if (Tetris::GetInstance()->musics_on) {
+		al_destroy_sample_instance(themeSongInstance);
+		al_destroy_sample(themeSong);
+	}
+
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		delete buttons[i];
 
@@ -357,6 +386,4 @@ void PlayingState::Terminate() {
 	delete tempPiece;
 
 	delete board;
-
-	al_destroy_bitmap(background);
 }
