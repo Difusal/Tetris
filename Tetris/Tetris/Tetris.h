@@ -43,7 +43,8 @@ public:
 	ALLEGRO_TIMER *GetSoftDropTimer() { return softDropTimer; }
 	ALLEGRO_TIMER *GetSidewaysMovementTimer() { return sidewaysMovementTimer; }
 
-	ALLEGRO_FONT *font;
+	ALLEGRO_FONT *big_font;
+	ALLEGRO_FONT *regular_font;
 
 	ALLEGRO_SAMPLE *lineClearSound;
 	ALLEGRO_SAMPLE *explosionSound;
@@ -57,8 +58,8 @@ public:
 
 private:
 	static Tetris *instance;
-	int state;
 	vector<State*> states;
+	int state;
 
 	ALLEGRO_BITMAP *mouse;
 

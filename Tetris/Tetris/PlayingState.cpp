@@ -211,9 +211,9 @@ void PlayingState::Initialize()
 	PositionFallingPieceOnBoardTop();
 
 	/* defining buttons */
-	soundsButton = new Button(618, 380, 657, 419);
+	soundsButton = new Button(618, 380, 658, 420);
 	buttons.push_back(soundsButton);
-	musicsButton = new Button(670, 380, 709, 419);
+	musicsButton = new Button(670, 380, 710, 420);
 	buttons.push_back(musicsButton);
 	exitButton = new Button(630, 462, 700, 494);
 	buttons.push_back(exitButton);
@@ -290,7 +290,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 
 	/* checking if any button was pressed */
 	if (exitButton->wasPressed()) {
-		Tetris::GetInstance()->setDoneState(true);
+		Tetris::GetInstance()->ChangeState(MainMenu);
 		return true;
 	}
 	if (musicsButton->wasPressed()) {
@@ -383,17 +383,17 @@ void PlayingState::Draw() {
 	/* printing score */
 	stringstream ss;
 	ss << score;
-	al_draw_text(Tetris::GetInstance()->font, Yellow, 665, 300, ALLEGRO_ALIGN_CENTER, ss.str().c_str());
+	al_draw_text(Tetris::GetInstance()->regular_font, Yellow, 665, 300, ALLEGRO_ALIGN_CENTER, ss.str().c_str());
 
 	/* if game paused */
 	if (gamePaused) {
 		unsigned int alpha = 200;
 		al_draw_filled_rectangle(0, 0, ScreenWidth, ScreenHeight, al_map_rgba(32*alpha, 32*alpha, 32*alpha, alpha));
 		int x = ScreenWidth/2.0;
-		int y1 = ScreenHeight/2.0 - Tetris::GetInstance()->font->height*2;
-		int y2 = ScreenHeight/2.0 + Tetris::GetInstance()->font->height;
-		al_draw_text(Tetris::GetInstance()->font, Yellow, x, y1, ALLEGRO_ALIGN_CENTRE, "Game Paused");
-		al_draw_text(Tetris::GetInstance()->font, White, x, y2, ALLEGRO_ALIGN_CENTRE, "Press any key or click the screen to resume");
+		int y1 = ScreenHeight/2.0 - Tetris::GetInstance()->regular_font->height*2;
+		int y2 = ScreenHeight/2.0 + Tetris::GetInstance()->regular_font->height;
+		al_draw_text(Tetris::GetInstance()->regular_font, Yellow, x, y1, ALLEGRO_ALIGN_CENTRE, "Game Paused");
+		al_draw_text(Tetris::GetInstance()->regular_font, White, x, y2, ALLEGRO_ALIGN_CENTRE, "Press any key or click the screen to resume");
 		return;
 	}
 

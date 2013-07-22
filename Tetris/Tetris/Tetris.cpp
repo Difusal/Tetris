@@ -1,4 +1,5 @@
 #include "Tetris.h"
+#include "MainMenuState.h"
 #include "PlayingState.h"
 
 /* generates random numbers */
@@ -23,8 +24,7 @@ Tetris *Tetris::GetInstance()
 
 void Tetris::ChangeState (int newState)
 {
-	if (state != -1)
-	{
+	if (state != -1) {
 		states[state]->Terminate();
 	}
 
@@ -49,8 +49,9 @@ void Tetris::CreateAllegroDisplay()
 
 void Tetris::LoadFonts()
 {
-	font = al_load_font(ConsolaTTF, 25, NULL);
-	if (!font)
+	regular_font = al_load_font(ConsolaTTF, 25, NULL);
+	big_font = al_load_font(ConsolaTTF, 50, NULL);
+	if (!regular_font)
 	{
 		al_show_native_message_box(Tetris::GetInstance()->display, "Error", "Could not load font file.", "Have you included the resources in the same directory of the program?", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		exit(-1);
@@ -175,9 +176,10 @@ void Tetris::StartTetris()
 {
 	Initialize();
 
+	states.push_back(new MainMenuState());
 	states.push_back(new PlayingState());
 	state = -1;
-	ChangeState(0);
+	ChangeState(MainMenu);
 
 	cout << "Starting control cycle..." << endl;
 	while (!done)
@@ -232,7 +234,7 @@ void Tetris::Terminate()
 {
 	cout << "Deallocating memory and quitting..." << endl;
 
-	al_destroy_font(font);
+	al_destroy_font(regular_font);
 
 	al_destroy_event_queue(event_queue);
 	al_destroy_timer(sidewaysMovementTimer);

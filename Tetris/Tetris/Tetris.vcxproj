@@ -14,6 +14,8 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="PlayingState.cpp" />
     <ClCompile Include="Tetris.cpp" />
@@ -21,6 +23,8 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="MenuButton.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="PlayingState.h" />
     <ClInclude Include="state.h" />
