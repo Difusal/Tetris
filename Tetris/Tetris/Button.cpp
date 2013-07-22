@@ -13,8 +13,8 @@ Button::Button(int X1, int Y1, int X2, int Y2, ALLEGRO_COLOR Color)
 
 bool Button::isBeingHovered()
 {
-	if ((630 < Tetris::GetInstance()->mouse_x && Tetris::GetInstance()->mouse_x < 700) &&
-		(462 < Tetris::GetInstance()->mouse_y && Tetris::GetInstance()->mouse_y < 494))
+	if ((p1_x < Tetris::GetInstance()->mouse_x && Tetris::GetInstance()->mouse_x < p2_x) &&
+		(p1_y < Tetris::GetInstance()->mouse_y && Tetris::GetInstance()->mouse_y < p2_y))
 		return true;
 
 	return false;
@@ -22,10 +22,12 @@ bool Button::isBeingHovered()
 
 bool Button::wasPressed()
 {
-	if ((630 < Tetris::GetInstance()->mouse_x && Tetris::GetInstance()->mouse_x < 700) &&
-		(462 < Tetris::GetInstance()->mouse_y && Tetris::GetInstance()->mouse_y < 494) &&
-		Tetris::GetInstance()->left_mouse_button_released)
-		return true;
+	if ((p1_x < Tetris::GetInstance()->mouse_x && Tetris::GetInstance()->mouse_x < p2_x) &&
+		(p1_y < Tetris::GetInstance()->mouse_y && Tetris::GetInstance()->mouse_y < p2_y) &&
+		Tetris::GetInstance()->left_mouse_button_released) {
+			Tetris::GetInstance()->left_mouse_button_released = false;
+			return true;
+	}
 
 	return false;
 }

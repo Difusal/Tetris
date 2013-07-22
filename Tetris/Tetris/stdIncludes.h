@@ -41,9 +41,9 @@ const double FPS = 30.0;
 #define ConsolaTTF "res//fonts//consola.ttf"
 
 /* images */
-//#define StartMenuWallpaper "res//images//StartMenuWallpaperHD.png"
 #define PlayingBackground "res//images//playing_bg.png"
 #define MouseCursor "res//images//mouse_cursor.png"
+#define ForbiddenIcon "res//images//forbidden.png"
 
 /* piece patterns */
 #define YellowPattern "res//images//yellow-cell.png"
@@ -56,6 +56,8 @@ const double FPS = 30.0;
 #define ThemeSong "res//musics//tetris_theme.ogg"
 
 /* sounds */
+#define LineClearSound "res//sounds//line_clear.wav"
+#define ExplosionSound "res//sounds//explosion.wav"
 #define OverButton "res//sounds//over_button.wav"
 #define PressedButton "res//sounds//pressed_button.wav"
 

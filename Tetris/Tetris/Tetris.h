@@ -45,6 +45,10 @@ public:
 
 	ALLEGRO_FONT *font;
 
+	ALLEGRO_SAMPLE *lineClearSound;
+	ALLEGRO_SAMPLE *explosionSound;
+	ALLEGRO_SAMPLE *themeSong;
+
 	double mouse_x, mouse_y;
 	bool left_mouse_button_pressed;
 	bool left_mouse_button_released;

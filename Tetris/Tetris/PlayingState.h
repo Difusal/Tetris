@@ -36,6 +36,8 @@ private:
 	double pieceSidewaysMovementDelay;
 
 	bool gamePaused;
+	bool pausingMusic;
+	bool resumingMusic;
 	bool firstPieceLocked;
 	bool pieceLocked;
 	bool pieceAlreadyHolded;
@@ -53,12 +55,14 @@ private:
 	Piece *holdPiece;
 	Piece *tempPiece;
 
+	Button *soundsButton;
+	Button *musicsButton;
 	Button *exitButton;
 	vector<Button*> buttons;
 
-	ALLEGRO_SAMPLE *themeSong;
 	ALLEGRO_SAMPLE_INSTANCE *themeSongInstance;
 
 	ALLEGRO_KEYBOARD_STATE keyState;
+	ALLEGRO_BITMAP *forbidden;
 	ALLEGRO_BITMAP *background;
 };

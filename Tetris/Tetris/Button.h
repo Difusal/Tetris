@@ -10,6 +10,9 @@ public:
 	bool isBeingHovered();
 	bool wasPressed();
 
+	int getX() { return p1_x; }
+	int getY() { return p1_y; }
+
 	void drawButton();
 
 	~Button(void);

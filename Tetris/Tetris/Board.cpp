@@ -119,6 +119,9 @@ void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp, bo
 		}
 	}
 	
+	/* calculating score */
+	if (lines_cleared != 0)
+		cout << "! " << lines_cleared << " cleared !" << endl;
 	int points_for_x_lines = 0;
 	switch (lines_cleared)
 	{
@@ -136,13 +139,27 @@ void Board::Update(unsigned int &Score, unsigned int &Level, bool &LeveledUp, bo
 		points_for_x_lines = 300;
 		break;
 	case 4:
-		/* !! TETRIS !! */
 		points_for_x_lines = 1200;
 		break;
 	}
 
-	if (lines_cleared != 0)
-		cout << "! " << lines_cleared << " cleared !" << endl;
+	/* playing sounds */
+	if (Tetris::GetInstance()->sounds_on) {
+		switch (lines_cleared)
+		{
+		default:
+		case 0:
+			break;
+		case 1:
+		case 2:
+		case 3:
+			al_play_sample(Tetris::GetInstance()->lineClearSound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, 0);
+			break;
+		case 4:
+			al_play_sample(Tetris::GetInstance()->explosionSound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, 0);
+			break;
+		}
+	}
 
 	/* updating score */
 	Score += points_for_x_lines * (Level + 1);

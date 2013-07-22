@@ -167,6 +167,11 @@ void PlayingState::Initialize()
 		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		exit(-1);
 	}
+	forbidden = al_load_bitmap(ForbiddenIcon);
+	if (!forbidden) {
+		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load forbidden bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		exit(-1);
+	}
 
 	/* initializing variables */
 	score = 0;
@@ -179,6 +184,8 @@ void PlayingState::Initialize()
 	UpdateTimers();
 
 	gamePaused = false;
+	pausingMusic = false;
+	resumingMusic = false;
 	firstPieceLocked = false;
 	pieceLocked = false;
 	pieceAlreadyHolded = false;
@@ -204,27 +211,44 @@ void PlayingState::Initialize()
 	PositionFallingPieceOnBoardTop();
 
 	/* defining buttons */
+	soundsButton = new Button(618, 380, 657, 419);
+	buttons.push_back(soundsButton);
+	musicsButton = new Button(670, 380, 709, 419);
+	buttons.push_back(musicsButton);
 	exitButton = new Button(630, 462, 700, 494);
 	buttons.push_back(exitButton);
 
 	if (Tetris::GetInstance()->musics_on) {
 		/* loading audio samples */
-		themeSong = al_load_sample(ThemeSong);
-		if (!themeSong) {
+		Tetris::GetInstance()->themeSong = al_load_sample(ThemeSong);
+		if (!Tetris::GetInstance()->themeSong) {
 			al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load Tetris theme song.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 			exit(-1);
 		}
 		/* setting play mode */
-		themeSongInstance = al_create_sample_instance(themeSong);
+		themeSongInstance = al_create_sample_instance(Tetris::GetInstance()->themeSong);
 		al_set_sample_instance_playmode(themeSongInstance, ALLEGRO_PLAYMODE_LOOP);
 		al_attach_sample_instance_to_mixer(themeSongInstance, al_get_default_mixer());
 		/* start playing song */
 		al_play_sample_instance(themeSongInstance);
-	}	
+	}
 }
 
 bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	al_get_keyboard_state(&keyState);
+
+	/* pausing/resuming music */
+	if (pausingMusic) {
+		pausingMusic = false;
+		cout << "Saving sample instance current position..." << endl;
+		themeSongInstancePosition = al_get_sample_instance_position(themeSongInstance);
+		al_stop_sample_instance(themeSongInstance);
+	}
+	else if (Tetris::GetInstance()->musics_on && resumingMusic) {
+		resumingMusic = false;
+		al_set_sample_instance_position(themeSongInstance, themeSongInstancePosition);
+		al_play_sample_instance(themeSongInstance);
+	}
 
 	/* pausing/resuming game */
 	if ((Tetris::GetInstance()->left_mouse_button_released && gamePaused) ||
@@ -235,17 +259,11 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 			{
 			case 0:
 				gamePaused = true;
-				if (Tetris::GetInstance()->musics_on) {
-					themeSongInstancePosition = al_get_sample_instance_position(themeSongInstance);
-					al_stop_sample_instance(themeSongInstance);
-				}
+				pausingMusic = true;
 				break;
 			case 1:
 				gamePaused = false;
-				if (Tetris::GetInstance()->musics_on) {
-					al_set_sample_instance_position(themeSongInstance, themeSongInstancePosition);
-					al_play_sample_instance(themeSongInstance);
-				}
+				resumingMusic = true;
 				Tetris::GetInstance()->left_mouse_button_released = false;
 				return true;
 				break;
@@ -275,6 +293,36 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 		Tetris::GetInstance()->setDoneState(true);
 		return true;
 	}
+	if (musicsButton->wasPressed()) {
+		switch (Tetris::GetInstance()->musics_on)
+		{
+		case 0:
+			cout << "Music: On" << endl;
+			resumingMusic = true;
+			Tetris::GetInstance()->musics_on = true;
+			break;
+		case 1:
+			cout << "Music: Off" << endl;
+			pausingMusic = true;
+			Tetris::GetInstance()->musics_on = false;
+			break;
+		}
+		return true;
+	}
+	if (soundsButton->wasPressed()) {
+		switch (Tetris::GetInstance()->sounds_on)
+		{
+		case 0:
+			cout << "Sounds Effects: On" << endl;
+			Tetris::GetInstance()->sounds_on = true;
+			break;
+		case 1:
+			cout << "Sounds Effects: Off" << endl;
+			Tetris::GetInstance()->sounds_on = false;
+			break;
+		}
+		return true;
+	}
 
 	/* if line is full, delete it and move down matrix */
 	board->Update(score, level, leveledUp, firstPieceLocked);
@@ -294,8 +342,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	/* if piece settled, releasing next */
 	if (pieceLocked) {
 		lockDelayCounter++;
-		if (al_key_down(&keyState, ALLEGRO_KEY_DOWN) ||
-			al_key_down(&keyState, ALLEGRO_KEY_UP) ||
+		if (al_key_down(&keyState, ALLEGRO_KEY_UP) ||
 			lockDelayCounter == lockDelay) {
 			/* restarting counter */
 			lockDelayCounter = 0;
@@ -363,6 +410,12 @@ void PlayingState::Draw() {
 	if (holdPiece)
 		holdPiece->Draw();
 
+	/* drawing forbidden above icons */
+	if (!Tetris::GetInstance()->sounds_on)
+		al_draw_bitmap(forbidden, soundsButton->getX(), soundsButton->getY(), NULL);
+	if (!Tetris::GetInstance()->musics_on)
+		al_draw_bitmap(forbidden, musicsButton->getX(), musicsButton->getY(), NULL);
+
 	/* checking if any button is being hovered */
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		if (buttons[i]->isBeingHovered())
@@ -374,7 +427,7 @@ void PlayingState::Terminate() {
 
 	if (Tetris::GetInstance()->musics_on) {
 		al_destroy_sample_instance(themeSongInstance);
-		al_destroy_sample(themeSong);
+		al_destroy_sample(Tetris::GetInstance()->themeSong);
 	}
 
 	for (unsigned int i = 0; i < buttons.size(); i++)

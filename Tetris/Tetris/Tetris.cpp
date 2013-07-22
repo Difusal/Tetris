@@ -88,9 +88,6 @@ void Tetris::Initialize()
 	al_install_keyboard();
 	al_install_audio();
 
-	cout << "Stating how many sounds can play simultaneously..." << endl;
-	al_reserve_samples(2);
-
 	cout << "Creating display..." << endl;
 	CreateAllegroDisplay();
 	cout << "Hiding windows mouse cursor..." << endl;
@@ -116,6 +113,13 @@ void Tetris::Initialize()
 	al_register_event_source(event_queue, al_get_timer_event_source(sidewaysMovementTimer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 	al_register_event_source(event_queue, al_get_keyboard_event_source());	
+
+	cout << "Stating how many sounds can play simultaneously..." << endl;
+	al_reserve_samples(3);
+
+	cout << "Loading audio samples..." << endl;
+	lineClearSound = al_load_sample(LineClearSound);
+	explosionSound = al_load_sample(ExplosionSound);
 
 	cout << "Initializing variables..." << endl;
 	mouse = al_load_bitmap(MouseCursor);
@@ -199,14 +203,14 @@ void Tetris::StartTetris()
 			/* -- mouse cursor -- */
 			al_draw_bitmap(mouse, mouse_x, mouse_y, NULL);
 
-			
+			/*
 			// mouse temp coords
 			stringstream ss;
 			ss << mouse_x << " " << mouse_y;
 			al_draw_text(font, Yellow, 0, 0, NULL, ss.str().c_str());
 			//cout << ss.str() << endl;
 			// -----------------
-			
+			*/
 
 			al_flip_display();
 			al_clear_to_color(Black);
