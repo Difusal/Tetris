@@ -5,7 +5,7 @@ void MainMenuState::Initialize()
 	/* loading background */
 	background = al_load_bitmap(MainMenuScrollingBackground);
 	if (!background) {
-		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load scrolling background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
 		exit(-1);
 	}
 
