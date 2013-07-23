@@ -121,6 +121,11 @@ void Tetris::Initialize()
 	cout << "Loading audio samples..." << endl;
 	lineClearSound = al_load_sample(LineClearSound);
 	explosionSound = al_load_sample(ExplosionSound);
+	themeSong = al_load_sample(ThemeSong);
+	if (!themeSong) {
+		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load Tetris theme song.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		exit(-1);
+	}
 
 	cout << "Initializing variables..." << endl;
 	mouse = al_load_bitmap(MouseCursor);

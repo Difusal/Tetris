@@ -205,7 +205,7 @@ void PlayingState::Initialize()
 	/* defining hold piece */
 	holdPiece = nullptr;
 	/* defining temp piece */
-	tempPiece = nullptr;
+	tempPiece = new Piece();
 
 	PositionPiecesCorrectlyOnEachBox();
 	PositionFallingPieceOnBoardTop();
@@ -219,12 +219,6 @@ void PlayingState::Initialize()
 	buttons.push_back(exitButton);
 
 	if (Tetris::GetInstance()->musics_on) {
-		/* loading audio samples */
-		Tetris::GetInstance()->themeSong = al_load_sample(ThemeSong);
-		if (!Tetris::GetInstance()->themeSong) {
-			al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load Tetris theme song.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-			exit(-1);
-		}
 		/* setting play mode */
 		themeSongInstance = al_create_sample_instance(Tetris::GetInstance()->themeSong);
 		al_set_sample_instance_playmode(themeSongInstance, ALLEGRO_PLAYMODE_LOOP);
@@ -284,7 +278,7 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	if (leveledUp) {
 		cout << "Level Up!" << endl;
 		leveledUp = false;
-		PlayingFPS += 10;
+		PlayingFPS += 15;
 		UpdateTimers();
 	}
 
