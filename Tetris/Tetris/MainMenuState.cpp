@@ -5,8 +5,12 @@ void MainMenuState::Initialize()
 	/* loading background */
 	background = al_load_bitmap(MainMenuScrollingBackground);
 	if (!background) {
-		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load scrolling background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		exit(-1);
+		al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load scrolling background bitmap.", "The program will try to load an alternative background.\nPress OK.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		background = al_load_bitmap(MainMenuAlternativeBackground);
+		if (!background) {
+			al_show_native_message_box(Tetris::GetInstance()->GetDisplay(), "Error", "Could not load alternative background bitmap.", "Your resources folder must be corrupt.\nThe program will now close.\nPress OK.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+			exit(-1);
+		}
 	}
 
 	/* initializing variables */
