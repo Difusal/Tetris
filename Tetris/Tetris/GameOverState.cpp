@@ -30,7 +30,7 @@ void GameOverState::Initialize()
 bool GameOverState::Update(ALLEGRO_EVENT *ev) {
 	/* checking if any button was pressed */
 	if (playAgainButton->wasPressed()) {
-		Tetris::GetInstance()->ChangeState(Playing);
+		Tetris::GetInstance()->ChangeState(Play);
 		return true;
 	}
 	else if (mainMenuButton->wasPressed()) {

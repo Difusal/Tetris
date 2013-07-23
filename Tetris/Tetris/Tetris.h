@@ -14,11 +14,11 @@ struct Cell {
 
 enum GameState {
 	MainMenu,
-	Playing,
+	Play,
 	GameOver,
-	HowTo,
-	OptionsMenu,
-	Credits
+	HowToPlay,
+	Options,
+	About
 };
 
 class Tetris

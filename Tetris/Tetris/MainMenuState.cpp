@@ -81,7 +81,19 @@ bool MainMenuState::Update(ALLEGRO_EVENT *ev) {
 
 	/* checking if any button was pressed */
 	if (playButton->wasPressed()) {
-		Tetris::GetInstance()->ChangeState(Playing);
+		Tetris::GetInstance()->ChangeState(Play);
+		return true;
+	}
+	else if (howToPlayButton->wasPressed()) {
+		Tetris::GetInstance()->ChangeState(HowToPlay);
+		return true;
+	}
+	else if (optionsButton->wasPressed()) {
+		Tetris::GetInstance()->ChangeState(Options);
+		return true;
+	}
+	else if (aboutButton->wasPressed()) {
+		Tetris::GetInstance()->ChangeState(About);
 		return true;
 	}
 	else if (exitButton->wasPressed()) {
