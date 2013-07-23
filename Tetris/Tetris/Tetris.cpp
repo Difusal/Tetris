@@ -226,6 +226,7 @@ void Tetris::StartTetris()
 			done = true;
 		}
 	}
+	cout << "* done = true; *" << endl;
 
 	Terminate();
 }

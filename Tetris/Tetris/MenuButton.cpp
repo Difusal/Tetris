@@ -1,35 +1,30 @@
 #include "MenuButton.h"
 #include "Tetris.h"
 
-MenuButton::MenuButton(const char *Label, bool IsThisTheTitle, int YPos) {
+MenuButton::MenuButton(const char *Label, bool IsThisTheTitle) {
 	label = Label;
 
 	isTitle = IsThisTheTitle;
 
+	int fontSize = 25;
 	if (isTitle)
-		font = *Tetris::GetInstance()->big_font;
-	else
-		font = *Tetris::GetInstance()->regular_font;
+		fontSize = 50;
+	font = al_load_font(ConsolaTTF, fontSize, NULL);
 
 	int y_margin = 5;
 	if (isTitle)
 		y_margin = 18;
 
-	y_pos = YPos;
+	y_pos = 80;
 	p1_x = 1;
 	p1_y = y_pos - y_margin;
 	p2_x = ScreenWidth;
-	p2_y = y_pos + font.height;
+	p2_y = y_pos + font->height;
 
 	button_color = Yellow;
 }
 
 void MenuButton::setYPos(int YPos) {
-	if (isTitle)
-		font = *Tetris::GetInstance()->big_font;
-	else
-		font = *Tetris::GetInstance()->regular_font;
-
 	int y_margin = 5;
 	if (isTitle)
 		y_margin = 18;
@@ -38,7 +33,7 @@ void MenuButton::setYPos(int YPos) {
 	p1_x = 1;
 	p1_y = y_pos - y_margin;
 	p2_x = ScreenWidth;
-	p2_y = y_pos + font.height;
+	p2_y = y_pos + font->height;
 }
 
 bool MenuButton::isBeingHovered() {
@@ -67,8 +62,8 @@ void MenuButton::drawButton() {
 	al_draw_filled_rectangle(p1_x, p1_y, p2_x, p2_y, al_map_rgba(32*alpha, 32*alpha, 32*alpha, alpha));
 	
 	/* printing label */
-	al_draw_text(&font, Black, ScreenWidth/2 + 1, y_pos + 2, ALLEGRO_ALIGN_CENTRE, label);
-	al_draw_text(&font, White, ScreenWidth/2, y_pos, ALLEGRO_ALIGN_CENTRE, label);
+	al_draw_text(font, Black, ScreenWidth/2 + 1, y_pos + 2, ALLEGRO_ALIGN_CENTRE, label);
+	al_draw_text(font, White, ScreenWidth/2, y_pos, ALLEGRO_ALIGN_CENTRE, label);
 
 	/* drawing button borders */
 	if (this->isBeingHovered() && !isTitle)
@@ -76,4 +71,5 @@ void MenuButton::drawButton() {
 }
 
 MenuButton::~MenuButton() {
+	al_destroy_font(font);
 }

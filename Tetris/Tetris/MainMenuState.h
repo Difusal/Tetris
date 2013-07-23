@@ -22,6 +22,7 @@ private:
 	MenuButton *howToPlayButton;
 	MenuButton *optionsButton;
 	MenuButton *aboutButton;
+	MenuButton *exitButton;
 
 	ALLEGRO_BITMAP *background;
 };

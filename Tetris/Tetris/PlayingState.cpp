@@ -432,6 +432,7 @@ void PlayingState::Terminate() {
 
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		delete buttons[i];
+	buttons.clear();
 
 	delete nextPiece;
 	delete fallingPiece;

@@ -12,6 +12,38 @@ void MainMenuState::Initialize()
 	/* initializing variables */
 	backgroundSourceX = 0;
 
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	* ----------------------									*
+	* AUTOMATIC MENU LAYOUTS									*
+	* ----------------------									*
+	* Making game menus has never been easier!					*
+	* 															*
+	* --------------------										*
+	* Defining menu title:										*
+	* --------------------										*
+	* -	Start by pushing a MenuButton with a true				*
+	* 	bool as the second parameter.							*
+	* -	This indicates that the object will be the				*
+	* 	menu title rather than a button.						*
+	* 															*
+	* ---------------------------								*
+	* Adding buttons to the menu:								*
+	* ---------------------------								*
+	* -	Just add a new MenuButtonObject and state				*
+	* 	the label in the parameters.							*
+	* -	The following for cycle will correctly					*
+	* 	format the buttons layout according to					*
+	* 	the number of existing buttons.							*
+	* -	You don't need to worry with anything else! :D			*
+	* 	Cool huh? The program manages all the buttons for you.	*
+	* 															*
+	* OH! Sorry... You still have to state what	happens			*
+	* when you press each button on Update() method... :P		*
+	* 															*
+	* Best regards,												*
+	* Henrique Ferrolho											*
+	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	/* pushing buttons */
 	menuTitle = new MenuButton("TETRIS", true);
 	buttons.push_back(menuTitle);
@@ -23,13 +55,14 @@ void MainMenuState::Initialize()
 	buttons.push_back(optionsButton);
 	aboutButton = new MenuButton("ABOUT");
 	buttons.push_back(aboutButton);
+	exitButton = new MenuButton("EXIT");
+	buttons.push_back(exitButton);
 
 	/* formatting button positions according to buttons vector size */
-	int spaceBetweenButtons = (ScreenHeight-menuTitle->getYPos()) / buttons.size();
-	cout << spaceBetweenButtons;
+	int spaceBetweenButtons = 0.6 * (ScreenHeight-menuTitle->getYPos()) / buttons.size();
 	if (buttons.size() > 1)
 		for (unsigned int i = 1; i < buttons.size(); i++)
-			buttons[i]->setYPos(i*spaceBetweenButtons);
+			buttons[i]->setYPos(i*spaceBetweenButtons + 0.4/2*(ScreenHeight-menuTitle->getYPos()));
 }
 
 bool MainMenuState::Update(ALLEGRO_EVENT *ev) {
@@ -44,6 +77,10 @@ bool MainMenuState::Update(ALLEGRO_EVENT *ev) {
 	/* checking if any button was pressed */
 	if (playButton->wasPressed()) {
 		Tetris::GetInstance()->ChangeState(Playing);
+		return true;
+	}
+	else if (exitButton->wasPressed()) {
+		Tetris::GetInstance()->setDoneState(true);
 		return true;
 	}
 
@@ -64,4 +101,5 @@ void MainMenuState::Terminate() {
 
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		delete buttons[i];
+	buttons.clear();
 }

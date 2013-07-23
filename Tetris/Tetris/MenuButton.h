@@ -5,7 +5,7 @@
 class MenuButton
 {
 public:
-	MenuButton(const char *Label, bool IsThisTheTitle = false, int YPos = 80);
+	MenuButton(const char *Label, bool IsThisTheTitle = false);
 
 	void setYPos(int YPos);
 
@@ -30,5 +30,5 @@ private:
 	bool pressed;
 
 	ALLEGRO_COLOR button_color;
-	ALLEGRO_FONT font;
+	ALLEGRO_FONT *font;
 };
