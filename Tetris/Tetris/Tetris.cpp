@@ -1,6 +1,7 @@
 #include "Tetris.h"
 #include "MainMenuState.h"
 #include "PlayingState.h"
+#include "GameOverState.h"
 
 /* generates random numbers */
 int random_number (int min, int max)
@@ -183,8 +184,9 @@ void Tetris::StartTetris()
 
 	states.push_back(new MainMenuState());
 	states.push_back(new PlayingState());
+	states.push_back(new GameOverState());
 	state = -1;
-	ChangeState(MainMenu);
+	ChangeState(GameOver);
 
 	cout << "Starting control cycle..." << endl;
 	while (!done)

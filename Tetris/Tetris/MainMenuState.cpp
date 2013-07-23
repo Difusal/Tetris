@@ -74,6 +74,7 @@ bool MainMenuState::Update(ALLEGRO_EVENT *ev) {
 	if (ev->type == ALLEGRO_EVENT_TIMER &&
 		ev->timer.source == Tetris::GetInstance()->GetTimer()) {
 			backgroundSourceX += 1;
+			/* if image scroll reached end, reposition sourceX at beginning */
 			if (backgroundSourceX + ScreenWidth > al_get_bitmap_width(background))
 				backgroundSourceX = 0;
 	}

@@ -15,7 +15,6 @@ struct Cell {
 enum GameState {
 	MainMenu,
 	Playing,
-	Paused,
 	GameOver,
 	HowTo,
 	OptionsMenu,
