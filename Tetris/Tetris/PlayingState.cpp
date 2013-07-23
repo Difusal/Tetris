@@ -97,8 +97,13 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 		/* hard dropping piece */
 		if (ev->keyboard.keycode == ALLEGRO_KEY_UP ||
 			ev->keyboard.keycode == ALLEGRO_KEY_SPACE) {
-				while (!board->UpdatePieceLockedState(fallingPiece))
+				while (!board->UpdatePieceLockedState(fallingPiece)) {
+					/* incrementing score by 2*/
+					score += 2;
+
+					/* incrementing piece y position */					
 					fallingPiece->y_pos++;
+				}
 				if (fallingPiece->y_pos < 0)
 					fallingPiece->y_pos = 0;
 		}
@@ -137,8 +142,13 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 			/* if down arrow key is pressed... */
 			if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
 				/* ...soft dropping piece */
-				if (!board->UpdatePieceLockedState(fallingPiece))
+				if (!board->UpdatePieceLockedState(fallingPiece)) {
+					/* incrementing score by 1*/
+					score++;
+
+					/* incrementing piece y position */
 					fallingPiece->y_pos++;
+				}
 				if (fallingPiece->y_pos < 0)
 					fallingPiece->y_pos = 0;
 			}
@@ -205,7 +215,7 @@ void PlayingState::Initialize()
 	/* defining hold piece */
 	holdPiece = nullptr;
 	/* defining temp piece */
-	tempPiece = new Piece();
+	tempPiece = nullptr;
 
 	PositionPiecesCorrectlyOnEachBox();
 	PositionFallingPieceOnBoardTop();
@@ -419,10 +429,8 @@ void PlayingState::Draw() {
 void PlayingState::Terminate() {
 	al_destroy_bitmap(background);
 
-	if (Tetris::GetInstance()->musics_on) {
+	if (Tetris::GetInstance()->musics_on)
 		al_destroy_sample_instance(themeSongInstance);
-		al_destroy_sample(Tetris::GetInstance()->themeSong);
-	}
 
 	for (unsigned int i = 0; i < buttons.size(); i++)
 		delete buttons[i];
@@ -431,7 +439,6 @@ void PlayingState::Terminate() {
 	delete nextPiece;
 	delete fallingPiece;
 	delete holdPiece;
-	delete tempPiece;
 
 	delete board;
 }

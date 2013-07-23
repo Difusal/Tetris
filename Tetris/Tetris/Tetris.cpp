@@ -240,7 +240,12 @@ void Tetris::Terminate()
 {
 	cout << "Deallocating memory and quitting..." << endl;
 
+	al_destroy_font(big_font);
 	al_destroy_font(regular_font);
+
+	al_destroy_sample(lineClearSound);
+	al_destroy_sample(explosionSound);
+	al_destroy_sample(themeSong);
 
 	al_destroy_event_queue(event_queue);
 	al_destroy_timer(sidewaysMovementTimer);
