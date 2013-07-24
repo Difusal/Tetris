@@ -16,7 +16,7 @@ MenuButton::MenuButton(const char *Label, bool IsThisTheTitle) {
 		y_margin = 18;
 
 	y_pos = 80;
-	p1_x = 1;
+	p1_x = 0;
 	p1_y = y_pos - y_margin;
 	p2_x = ScreenWidth;
 	p2_y = y_pos + font->height;
@@ -30,7 +30,7 @@ void MenuButton::setYPos(int YPos) {
 		y_margin = 18;
 
 	y_pos = 80+YPos;
-	p1_x = 1;
+	p1_x = 0;
 	p1_y = y_pos - y_margin;
 	p2_x = ScreenWidth;
 	p2_y = y_pos + font->height;
@@ -67,7 +67,7 @@ void MenuButton::drawButton() {
 
 	/* drawing button borders */
 	if (this->isBeingHovered() && !isTitle)
-		al_draw_rectangle(p1_x, p1_y, p2_x, p2_y, button_color, 1.0);
+		al_draw_rectangle(p1_x+1, p1_y, p2_x, p2_y, button_color, 1.0);
 }
 
 MenuButton::~MenuButton() {

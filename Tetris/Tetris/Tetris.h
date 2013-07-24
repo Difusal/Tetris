@@ -52,8 +52,11 @@ public:
 	double mouse_x, mouse_y;
 	bool left_mouse_button_pressed;
 	bool left_mouse_button_released;
+
 	bool musics_on;
 	bool sounds_on;
+
+	unsigned int tempScore;
 
 private:
 	static Tetris *instance;

@@ -17,6 +17,7 @@
 #include <sstream>
 #include <vector>
 #include <math.h>
+#include <fstream>
 
 using namespace std;
 
@@ -36,6 +37,9 @@ using namespace std;
 #define ScreenWidth 800
 #define ScreenHeight 600
 const double FPS = 30.0;
+
+/* data */
+#define top5FilePath "res//data//game_data.txt"
 
 /* fonts */
 #define ConsolaTTF "res//fonts//consola.ttf"

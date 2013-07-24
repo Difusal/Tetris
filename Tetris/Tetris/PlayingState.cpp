@@ -280,7 +280,13 @@ bool PlayingState::Update(ALLEGRO_EVENT *ev) {
 	if (board->GameOver()) {
 		cout << "! Game Over !" << endl;
 		cout << "Score: " << score << endl;
+
+		/* temporary saving score in a variable to process and store it after */
+		Tetris::GetInstance()->tempScore = score;
+
+		/* changing screen state */
 		Tetris::GetInstance()->ChangeState(GameOver);
+
 		return true;
 	}
 

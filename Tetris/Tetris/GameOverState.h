@@ -13,8 +13,13 @@ public:
 	virtual void Draw();
 	virtual void Terminate();
 
+	bool fileExists(const string &filename);
+	vector<unsigned int> readTop5FromFile();
+	void addDataToTop5AndWriteItToFile(unsigned int Data);
+
 private:
 	unsigned int score;
+	vector<unsigned int> top5;
 
 	vector<MenuButton*> buttons;
 	MenuButton *screenTitle;
