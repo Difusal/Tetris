@@ -13,6 +13,8 @@ public:
 	bool wasPressed();
 
 	int getYPos() { return y_pos; }
+	int getP1_Y() { return p1_y; }
+	int getP2_Y() { return p2_y; }
 
 	void drawButton();
 

@@ -7,8 +7,7 @@
 #include "AboutState.h"
 
 /* generates random numbers */
-int random_number (int min, int max)
-{
+int random_number (int min, int max) {
 	max++;
 
 	return ((rand() % (max-min)) + min);
@@ -88,6 +87,7 @@ void Tetris::Initialize()
 	al_init_font_addon();
 	al_init_ttf_addon();
 	al_init_acodec_addon();
+
 	cout << "Installing devices..." << endl;
 	al_install_mouse();
 	al_install_keyboard();
@@ -95,8 +95,19 @@ void Tetris::Initialize()
 
 	cout << "Creating display..." << endl;
 	CreateAllegroDisplay();
+
+	cout << "Displaying loading game background..." << endl;
+	loading_background = al_load_bitmap(LoadingGameBackground);
+	if (!loading_background) {
+		al_show_native_message_box(display, "Error", "Could not load loading game background bitmap.", "Your resources folder must be corrupt, please download it again.", NULL, ALLEGRO_MESSAGEBOX_ERROR);
+		exit(-1);
+	}
+	al_draw_bitmap(loading_background, 0, 0, NULL);
+	al_flip_display();
+
 	cout << "Hiding windows mouse cursor..." << endl;
 	al_hide_mouse_cursor(display);
+
 	cout << "Loading fonts..." << endl;
 	LoadFonts();
 

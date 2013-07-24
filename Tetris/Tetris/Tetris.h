@@ -64,6 +64,7 @@ private:
 	int state;
 
 	ALLEGRO_BITMAP *mouse;
+	ALLEGRO_BITMAP *loading_background;
 
 	bool done, draw;
 

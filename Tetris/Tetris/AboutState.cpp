@@ -48,7 +48,7 @@ void AboutState::Draw() {
 	int spaceBetweenLines = 30;
 	int boxYMargin = 15;
 	unsigned int alpha = 96;
-	int textYPos = 80+(mainMenuButton->getYPos()-80)/2 - text.size()*spaceBetweenLines/2;
+	int textYPos = screenTitle->getP2_Y()+(mainMenuButton->getP1_Y()-screenTitle->getP2_Y())/2 - text.size()*spaceBetweenLines/2;
 
 	/* drawing text dark transparent background */
 	int y = textYPos + text.size()*spaceBetweenLines;

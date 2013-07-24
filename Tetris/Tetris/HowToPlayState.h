@@ -14,6 +14,8 @@ public:
 	virtual void Terminate();
 
 private:
+	vector<const char*> text;
+
 	vector<MenuButton*> buttons;
 	MenuButton *screenTitle;
 	MenuButton *mainMenuButton;

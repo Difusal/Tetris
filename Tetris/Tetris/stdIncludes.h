@@ -45,6 +45,7 @@ const double FPS = 30.0;
 #define ConsolaTTF "res//fonts//consola.ttf"
 
 /* images */
+#define LoadingGameBackground "res//images//loading_game_bg.png"
 #define MainMenuScrollingBackground "res//images//main_menu_scrolling_bg.png"
 #define MainMenuAlternativeBackground "res//images//main_menu_alternative_bg.png"
 #define PlayingBackground "res//images//playing_bg.png"
