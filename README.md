@@ -1,4 +1,8 @@
 Tetris
 ======
 
-Tetris, what else do I need to describe..?
+- Fast and smooth;
+- Player can customize controls;
+- Line clear animation;
+- Sound effects;
+- Top 5.
