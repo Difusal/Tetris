@@ -151,6 +151,14 @@ void Tetris::Initialize()
 	musics_on = true;
 	sounds_on = true;
 
+	movePieceLeftKey = MoveLeftDefaultKey;
+	movePieceRightKey = MoveRightDefaultKey;
+	rotatePieceLeftKey = RotateLeftDefaultKey;
+	rotatePieceRightKey = RotateRightDefaultKey;
+	softDropPieceKey = SoftDropDefaultKey;
+	hardDropPieceKey = HardDropDefaultKey;
+	holdPieceKey = HoldPieceDefaultKey;
+
 	done = false;
 	draw = true;
 

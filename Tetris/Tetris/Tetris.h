@@ -58,6 +58,14 @@ public:
 
 	unsigned int tempScore;
 
+	int movePieceLeftKey;
+	int movePieceRightKey;
+	int rotatePieceLeftKey;
+	int rotatePieceRightKey;
+	int softDropPieceKey;
+	int hardDropPieceKey;
+	int holdPieceKey;
+
 private:
 	static Tetris *instance;
 	vector<State*> states;

@@ -38,6 +38,15 @@ using namespace std;
 #define ScreenHeight 600
 const double FPS = 30.0;
 
+/* defining default control keys */
+#define MoveLeftDefaultKey ALLEGRO_KEY_LEFT
+#define MoveRightDefaultKey ALLEGRO_KEY_RIGHT
+#define RotateLeftDefaultKey ALLEGRO_KEY_A
+#define RotateRightDefaultKey ALLEGRO_KEY_D
+#define SoftDropDefaultKey ALLEGRO_KEY_DOWN
+#define HardDropDefaultKey ALLEGRO_KEY_UP
+#define HoldPieceDefaultKey ALLEGRO_KEY_LSHIFT
+
 /* data */
 #define top5FilePath "res//data//game_data.txt"
 

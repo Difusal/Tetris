@@ -26,7 +26,7 @@ void PlayingState::PositionFallingPieceOnBoardTop() {
 void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 	if (ev->type == ALLEGRO_EVENT_KEY_UP) {		
 		/* right arrow key released */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+		if (ev->keyboard.keycode == Tetris::GetInstance()->movePieceRightKey) {
 				/* restarting counter */
 				pieceSidewaysMovementDelayCounter = 0;
 
@@ -34,7 +34,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 				rightArrowPressedContinuously = false;
 		}
 		/* left arrow key released */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
+		if (ev->keyboard.keycode == Tetris::GetInstance()->movePieceLeftKey) {
 			/* restarting counter */
 			pieceSidewaysMovementDelayCounter = 0;
 
@@ -46,21 +46,21 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 	if (ev->type == ALLEGRO_EVENT_KEY_DOWN) {
 		/* moving piece sideways ONCE */
 		if (!rightArrowPressedContinuously &&
-			ev->keyboard.keycode == ALLEGRO_KEY_RIGHT) {
+			ev->keyboard.keycode == Tetris::GetInstance()->movePieceRightKey) {
 				rightArrowPressedContinuously = true;
 				MovePieceRightIfPossible();
 		}
 		if (!leftArrowPressedContinuously &&
-			ev->keyboard.keycode == ALLEGRO_KEY_LEFT) {
+			ev->keyboard.keycode == Tetris::GetInstance()->movePieceLeftKey) {
 				leftArrowPressedContinuously = true;
 				MovePieceLeftIfPossible();
 		}
 
 		/* rotating piece */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_D) {
+		if (ev->keyboard.keycode == Tetris::GetInstance()->rotatePieceRightKey) {
 			fallingPiece->RotateRight();
 		}
-		if (ev->keyboard.keycode == ALLEGRO_KEY_A) {
+		if (ev->keyboard.keycode == Tetris::GetInstance()->rotatePieceLeftKey) {
 			fallingPiece->RotateLeft();
 		}
 		while (board->PieceIsInsideMainMatrixAfterRotating(fallingPiece)) {
@@ -72,7 +72,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 		}
 
 		/* holding piece */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_LSHIFT &&
+		if (ev->keyboard.keycode == Tetris::GetInstance()->holdPieceKey &&
 			!pieceAlreadyHolded)
 		{
 			pieceAlreadyHolded = true;
@@ -95,8 +95,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 		}
 
 		/* hard dropping piece */
-		if (ev->keyboard.keycode == ALLEGRO_KEY_UP ||
-			ev->keyboard.keycode == ALLEGRO_KEY_SPACE) {
+		if (ev->keyboard.keycode == Tetris::GetInstance()->hardDropPieceKey) {
 				while (!board->UpdatePieceLockedState(fallingPiece)) {
 					/* incrementing score by 2*/
 					score += 2;
@@ -126,11 +125,11 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 
 			/* moving falling piece right or left CONTINUOUSLY */
 			if (pieceMovementDelayAfterPressingKeyContinuouslyOver) {
-				if (al_key_down(&keyState, ALLEGRO_KEY_RIGHT) &&
+				if (al_key_down(&keyState, Tetris::GetInstance()->movePieceRightKey) &&
 					rightArrowPressedContinuously) {
 						MovePieceRightIfPossible();
 				}
-				if (al_key_down(&keyState, ALLEGRO_KEY_LEFT) &&
+				if (al_key_down(&keyState, Tetris::GetInstance()->movePieceLeftKey) &&
 					leftArrowPressedContinuously) {
 						MovePieceLeftIfPossible();
 				}
@@ -140,7 +139,7 @@ void PlayingState::ComputePlayerInput(ALLEGRO_EVENT * ev) {
 	if (ev->type == ALLEGRO_EVENT_TIMER &&
 		ev->timer.source == Tetris::GetInstance()->GetSoftDropTimer()) {
 			/* if down arrow key is pressed... */
-			if (al_key_down(&keyState, ALLEGRO_KEY_DOWN)) {
+			if (al_key_down(&keyState, Tetris::GetInstance()->softDropPieceKey)) {
 				/* ...soft dropping piece */
 				if (!board->UpdatePieceLockedState(fallingPiece)) {
 					/* incrementing score by 1*/
