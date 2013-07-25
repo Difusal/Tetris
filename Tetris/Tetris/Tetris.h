@@ -4,6 +4,7 @@
 #include "state.h"
 
 int random_number (int min, int max);
+string getKeyBasedOnAllegroKeyCode(int Code);
 
 enum PieceTypes { I, J, L, O, S, T, Z };
 enum CellColor { YellowCell, PurpleCell, RedCell, GreenCell, BlueCell };

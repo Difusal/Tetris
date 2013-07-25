@@ -55,7 +55,7 @@ void MainMenuState::Initialize()
 	buttons.push_back(playButton);
 	howToPlayButton = new MenuButton("HOW TO PLAY");
 	buttons.push_back(howToPlayButton);
-	optionsButton = new MenuButton("OPTIONS");
+	optionsButton = new MenuButton("CONTROLS");
 	buttons.push_back(optionsButton);
 	aboutButton = new MenuButton("ABOUT");
 	buttons.push_back(aboutButton);

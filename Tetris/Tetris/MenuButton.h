@@ -5,8 +5,9 @@
 class MenuButton
 {
 public:
-	MenuButton(const char *Label, bool IsThisTheTitle = false);
+	MenuButton(string Label, bool IsThisTheTitle = false, ALLEGRO_COLOR Color = White);
 
+	void setLabel(string Label) { label = Label; }
 	void setYPos(int YPos);
 
 	bool isBeingHovered();
@@ -21,7 +22,7 @@ public:
 	~MenuButton(void);
 
 private:
-	const char *label;
+	string label;
 
 	int y_pos;
 	int p1_x, p1_y;

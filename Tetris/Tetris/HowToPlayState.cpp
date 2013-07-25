@@ -19,7 +19,7 @@ void HowToPlayState::Initialize()
 	text.push_back("rotated as well.");
 	text.push_back("If the game board is full, the game is over.");
 	text.push_back("");
-	text.push_back("You can customize the controls in Options menu.");
+	text.push_back("You can customize the controls in Controls menu.");
 
 	/* pushing buttons */
 	screenTitle = new MenuButton("HOW TO PLAY", true);

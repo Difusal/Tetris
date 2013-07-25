@@ -8,6 +8,8 @@
 class OptionsState: public State
 {
 public:
+	void UpdateButtonBindings();
+
 	virtual void Initialize();
 	bool Update (ALLEGRO_EVENT * ev);
 	virtual void Draw();
@@ -16,6 +18,8 @@ public:
 private:
 	bool newKeyHasBeenSet;
 	int *ptrToKeyBeingSet;
+
+	stringstream ss;
 
 	vector<MenuButton*> buttons;
 	MenuButton *screenTitle;

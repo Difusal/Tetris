@@ -13,6 +13,58 @@ int random_number (int min, int max) {
 	return ((rand() % (max-min)) + min);
 }
 
+string getKeyBasedOnAllegroKeyCode(int Code) {
+	switch (Code)
+	{
+	default:
+	case 1: { return "A"; break; }
+	case 2: { return "B"; break; }
+	case 3: { return "C"; break; }
+	case 4: { return "D"; break; }
+	case 5: { return "E"; break; }
+	case 6: { return "F"; break; }
+	case 7: { return "G"; break; }
+	case 8: { return "H"; break; }
+	case 9: { return "I"; break; }
+	case 10: { return "J"; break; }
+	case 11: { return "K"; break; }
+	case 12: { return "L"; break; }
+	case 13: { return "M"; break; }
+	case 14: { return "N"; break; }
+	case 15: { return "O"; break; }
+	case 16: { return "P"; break; }
+	case 17: { return "Q"; break; }
+	case 18: { return "R"; break; }
+	case 19: { return "S"; break; }
+	case 20: { return "T"; break; }
+	case 21: { return "U"; break; }
+	case 22: { return "V"; break; }
+	case 23: { return "W"; break; }
+	case 24: { return "X"; break; }
+	case 25: { return "Y"; break; }
+	case 26: { return "Z"; break; }
+	case 27: case 37: { return "0"; break; }
+	case 28: case 38: { return "1"; break; }
+	case 29: case 39: { return "2"; break; }
+	case 30: case 40: { return "3"; break; }
+	case 31: case 41: { return "4"; break; }
+	case 32: case 42: { return "5"; break; }
+	case 33: case 43: { return "6"; break; }
+	case 34: case 44: { return "7"; break; }
+	case 35: case 45: { return "8"; break; }
+	case 36: case 46: { return "9"; break; }
+	case 75: { return "Space"; break; }
+	case 82: { return "Left"; break; }
+	case 83: { return "Right"; break; }
+	case 84: { return "Up"; break; }
+	case 85: { return "Down"; break; }
+	case 215: { return "Left Shift"; break; }
+	case 216: { return "Right Shift"; break; }
+	case 217: { return "Left Control"; break; }
+	case 218: { return "Right Control"; break; }
+	}
+}
+
 Tetris *Tetris::instance = nullptr;
 
 Tetris *Tetris::GetInstance()

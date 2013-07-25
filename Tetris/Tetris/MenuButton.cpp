@@ -1,7 +1,7 @@
 #include "MenuButton.h"
 #include "Tetris.h"
 
-MenuButton::MenuButton(const char *Label, bool IsThisTheTitle) {
+MenuButton::MenuButton(string Label, bool IsThisTheTitle, ALLEGRO_COLOR Color) {
 	label = Label;
 
 	isTitle = IsThisTheTitle;
@@ -21,7 +21,7 @@ MenuButton::MenuButton(const char *Label, bool IsThisTheTitle) {
 	p2_x = ScreenWidth;
 	p2_y = y_pos + font->height;
 
-	button_color = Yellow;
+	button_color = Color;
 }
 
 void MenuButton::setYPos(int YPos) {
@@ -62,12 +62,12 @@ void MenuButton::drawButton() {
 	al_draw_filled_rectangle(p1_x, p1_y, p2_x, p2_y, al_map_rgba(32*alpha, 32*alpha, 32*alpha, alpha));
 	
 	/* printing label */
-	al_draw_text(font, Black, ScreenWidth/2 + 1, y_pos + 2, ALLEGRO_ALIGN_CENTRE, label);
-	al_draw_text(font, White, ScreenWidth/2, y_pos, ALLEGRO_ALIGN_CENTRE, label);
+	al_draw_text(font, Black, ScreenWidth/2 + 1, y_pos + 2, ALLEGRO_ALIGN_CENTRE, label.c_str());
+	al_draw_text(font, button_color, ScreenWidth/2, y_pos, ALLEGRO_ALIGN_CENTRE, label.c_str());
 
 	/* drawing button borders */
 	if (this->isBeingHovered() && !isTitle)
-		al_draw_rectangle(p1_x+1, p1_y, p2_x, p2_y, button_color, 1.0);
+		al_draw_rectangle(p1_x+1, p1_y, p2_x, p2_y, Yellow, 1.0);
 }
 
 MenuButton::~MenuButton() {
