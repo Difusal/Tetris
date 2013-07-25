@@ -35,9 +35,16 @@
     <ClInclude Include="OptionsState.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="PlayingState.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="stdIncludes.h" />
     <ClInclude Include="Tetris.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tetris.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Tetris.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{73E2BCD5-3D49-4ACE-9D1E-65273D1CA413}</ProjectGuid>
